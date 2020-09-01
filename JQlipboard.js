@@ -49,13 +49,15 @@
 			return this
 				.css({
 					position: "absolute",   // Ensures that appending the object does not mess up the existing document
-					opacity: 0,             // ↴
+				
+					opacity: 0,
 					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it disables the avility to select it
+				
 					"-webkit-user-select": "auto",
 					"-khtml-user-select": "auto",
-					"-moz-user-select": "auto",	// Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
+					"-moz-user-select": "auto",
 					"-ms-user-select": "auto",
-					"user-select": "auto"
+					"user-select": "auto" // Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
 				})
 				.appendTo("body")
 				.copy()
@@ -66,7 +68,12 @@
 	//needs an overhaul
 	$.fn.paste = function(selector, method){
 		if(!method){
-			if((selector == "element" && !$("body").find("element").length) && (selector == "text" && !$("body").find("text").length)){
+			if(
+				"element" == selector &&
+				"text" == selector &&
+				!$("body").find("element").length &&
+				!$("body").find("text").length
+			){
 				method = selector;
 				selector = 0;
 			}
@@ -186,7 +193,7 @@
 		}
 	};
 
-	$.Qlipboard = function(config){
+	$.jQlipboard = function(config){
 		config = {
 			permissionPrompt: config.permissionPrompt || "when needed",
 			permissionAlert: config.permissionAlert || "when needed",

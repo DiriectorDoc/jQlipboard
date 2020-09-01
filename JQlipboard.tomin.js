@@ -1,3 +1,6 @@
+/*
+	This is the file that gets minified. It uses human-reduced code that a, online minifier just can't reduce.
+*/
 (function($) {
 	
 	if(!$) return;
@@ -165,7 +168,7 @@
         }
     };
 
-    $.Qlipboard = function(config){
+    $.jQlipboard = function(config){
 		config = {
 			permissionPrompt: config.permissionPrompt || "when needed",
 			permissionAlert: config.permissionAlert || "when needed",
