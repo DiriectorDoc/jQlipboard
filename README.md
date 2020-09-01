@@ -6,14 +6,14 @@ To install, simply add the following script tag below the tag where `jQuery.js` 
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script type="text/javascript" src="<link>"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/master/JQlipboard.js"></script>
 ```
 
 Or, for a minified script:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="<link.min>"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/master/JQlipboard.min.js"></script>
 ```
 
 ## Initilization
