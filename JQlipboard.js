@@ -4,7 +4,8 @@
 
 	window.qlipboard = {};
 
-	const isIE = !!document.documentMode; // IE browser exclusive. Checks if using IE
+	const isIE = /*@cc_on!@*/false || !!document.documentMode, // IE browser exclusive. Checks if using IE
+		  isFF = typeof InstallTrigger !== "undefined"; // Firefox browser exclusive. Checks if using Forefox;
 
 	function setQlipboard($this){
 		window.qlipboard.jqobj = $this == undefined ? null : $this.clone();
@@ -20,15 +21,24 @@
 	}
 
 	function warning(){
-		navigator.permissions.query({name: "clipboard-read"}).then(result => {
-			if(result.state == "denied"){
-				alert(
-					"Browser has been denied access clipboard. Some features may not work until permission is granted.\n" +
-					'To agrant permission, go into your browser setting and allow "Clipboard"'
-				)
-			}
-		});
-
+		let message = "Browser has been denied access clipboard. Some features may not work until permission is granted.\n" +
+			'To grant permission, go into your browser setting and allow "Clipboard"';
+		if(isFF){
+			browser.permissions.request({
+					permissions: ["clipboardWrite"]
+				})
+				.then(responce => { // Will be either true or false
+					if(!responce){
+						alert(message)
+					}
+				})
+		} else {
+			navigator.permissions.query({name: "clipboard-read"}).then(result => {
+				if(result.state == "denied"){
+					alert(message)
+				}
+			})
+		}
 		warning = nothing
 	}
 
@@ -49,10 +59,10 @@
 			return this
 				.css({
 					position: "absolute",   // Ensures that appending the object does not mess up the existing document
-				
+
 					opacity: 0,
 					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it disables the avility to select it
-				
+
 					"-webkit-user-select": "auto",
 					"-khtml-user-select": "auto",
 					"-moz-user-select": "auto",
@@ -135,13 +145,21 @@
 			if(isIE){
 				throw false;
 			} else {
+				if(isFF){
+					warning()
+				}
 				document.execCommand("cut")
 			}
 		} catch(err){
 			if(err){
 				console.error(err)
+				console.info("Trying $.copy() instead")
 			}
-			$.copy()
+			try {
+				$.copy()
+			} catch(err){
+				return
+			}
 			let focus = $(":focus"),
 				e = focus[0],
 				text = focus.val();
@@ -158,10 +176,16 @@
 			window.qlipboard.jqobj = null;
 		} else {
 			try {
+				if(isFF){
+					warning()
+				}
 				document.execCommand("copy")
 			} catch(err){
 				console.error(err)
-				console.warn("Trying navigator.clipboard.writeText() instead")
+				if(isFF){
+					return
+				}
+				console.info("Trying navigator.clipboard.writeText() instead")
 				let text = "";
 				if(window.getSelection){
 					text = window.getSelection().toString();

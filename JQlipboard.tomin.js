@@ -1,5 +1,5 @@
 /*
-	This is the file that gets minified. It uses human-reduced code that a, online minifier just can't reduce.
+	This is the file that gets minified. It uses human-reduced code that an online minifier just can't reduce.
 */
 (function($) {
 	
@@ -7,7 +7,9 @@
 	
 	window.qlipboard = {};
 
-    let isIE = !!document.documentMode,
+    let isIE = /*@cc_on!@*/false || !!document.documentMode,
+		isFF = typeof InstallTrigger !== "undefined",
+		z = a => a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html(),
         setQlipboard = ($this) => {
 			let a = $this == undefined ? null : $this.clone();
 			window.qlipboard.jqobj = a;
@@ -22,19 +24,27 @@
         },
 		quotePASTEquote = ($this, a) => $this.val($this.val().slice(0, $this[0].selectionStart) + a +$this.val().slice($this[0].selectionEnd)),
 		warning= a=>{
-			navigator.permissions.query({name: "clipboard-read"}).then(result => {
-				if(result.state == "denied"){
-					alert(
-						"Browser has been denied access clipboard. Some features may not work until permission is granted.\n" +
-						'To agrant permission, go into your browser setting and allow "Clipboard"'
-					)
-				}
-			});
-
+			let warn = z=>{alert("Browser has been denied access clipboard. Some features may not work until permission is granted.\n" +
+			'To grant permission, go into your browser setting and allow "Clipboard"')};
+			if(isFF){
+				browser.permissions.request({
+						permissions: ["clipboardWrite"]
+					})
+					.then(responce => { // Will be either true or false
+						if(!responce){
+							warn()
+						}
+					})
+			} else {
+				navigator.permissions.query({name: "clipboard-read"}).then(result => {
+					if(result.state == "denied"){
+						warn()
+					}
+				})
+			}
 			warning = nothing
 		},
-		nothing=a=>0,
-		z = a => a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html();
+		nothing=a=>0;
 
     $.fn.copy = function() {
         if (this.parent().length) {
@@ -118,13 +128,21 @@
             if(isIE){
                 throw 0;
             } else {
+				if(isFF){
+					warning()
+				}
                 document.execCommand("cut")
             }
         } catch(err){
 			if(err){
 				console.error(err)
+				console.info("Trying $.copy() instead")
 			}
-            $.copy()
+			try {
+				$.copy()
+			} catch(err){
+				return
+			}
 			quotePASTEquote($(":focus"), "")
         }
     };
@@ -137,9 +155,15 @@
             window.qlipboard.jqobj = null;
         } else {
             try {
-                document.execCommand("copy")
+                if(isFF){
+					warning()
+				}
+				document.execCommand("copy")
             } catch (err) {
                 console.error(err)
+				if(isFF){
+					return
+				}
                 console.warn("Trying navigator.clipboard.writeText() instead")
                 let text = "";
                 if (window.getSelection) {
