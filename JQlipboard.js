@@ -1,3 +1,15 @@
+/**
+ *	jQlipboard (v0.1.1)
+ *	A jQuery plugin that makes handling clipboard processes easier
+ *
+ *
+ *	Author:        Diriector_Doc
+ *	Licence:       MIT
+ *	repository:    https://github.com/DiriectorDoc/jQlipboard
+ *
+ *
+ *	Copyright (c) 2020 Diriector_Doc (DiriectorDoc on github)
+ **/
 (function($) {
 
 	if(!$) return;
