@@ -105,7 +105,7 @@
             .remove()
     };
 
-    const $select = $.fn.select;
+    let $select = $.fn.select;
     $.fn.select = function(elem, name, value, pass) {
         if ("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName)
             return $select(elem, name, value, pass);
@@ -147,35 +147,40 @@
         }
     };
 
-    $.copy = function(text) {
-        if (text !== undefined) {
-            $("<a>")
-                .html(text)
-                .copy()
-            window.qlipboard.jqobj = null;
-        } else {
-            try {
-                if(isFF){
+    $.copy = function(text){
+		window.qlipboard = {};
+		if(text !== undefined){
+			$("<a>")
+				.html(text)
+				.copy()
+		} else {
+			try {
+				if(isFF){
 					warning()
 				}
 				document.execCommand("copy")
-            } catch (err) {
-                console.error(err)
+			} catch(err){
+				console.error(err)
 				if(isFF){
 					return
 				}
-                console.warn("Trying navigator.clipboard.writeText() instead")
-                let text = "";
-                if (window.getSelection) {
-                    text = window.getSelection().toString();
-                } else if (document.selection && document.selection.type != "Control") {
-                    text = document.selection.createRange().text;
-                }
-				warning()
-                navigator.clipboard.writeText(text);
-            }
-        }
-    };
+				if(navigator.clipboard){
+					console.info("Trying navigator.clipboard.writeText() instead")
+					let text = "";
+					if(window.getSelection){
+						text = window.getSelection().toString();
+					} else if(document.selection && document.selection.type != "Control"){
+						text = document.selection.createRange().text;
+					}
+					warning()
+					navigator.clipboard.writeText(text)
+					setQlipboard()
+				} else {
+					console.error("Cannot copy text to clipboard")
+				}
+			}
+		}
+	};
 
     $.paste = function() {
         if (isIE) {
@@ -233,14 +238,19 @@
 			}
 		});
 		if(config.copyListener){
-			$(document).bind("copy", setQlipboard)
+			if($().bind){
+				$(document).bind("copy", setQlipboard)
+			} else {
+				$(document).on("copy", setQlipboard)
+			}
 		}
-	}
+	};
+	
+	$.jQlipboardVersion = "0.1.1"
 }((function(){
 	try{
 		return jQuery
 	} catch(e){
-		console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin.")
-		return 0
+		return console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin.")
 	}
 })()));

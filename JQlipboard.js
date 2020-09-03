@@ -17,7 +17,7 @@
 	window.qlipboard = {};
 
 	const isIE = /*@cc_on!@*/false || !!document.documentMode, // IE browser exclusive. Checks if using IE
-		  isFF = typeof InstallTrigger !== "undefined"; // Firefox browser exclusive. Checks if using Forefox;
+		  isFF = typeof InstallTrigger !== "undefined"; // Firefox browser exclusive. Checks if using Forefox
 
 	function setQlipboard($this){
 		window.qlipboard.jqobj = $this == undefined ? null : $this.clone();
@@ -25,10 +25,10 @@
 		warning()
 		navigator.clipboard.readText()
 			.then(text => {
-				window.qlipboard.text = window.qlipboard.clipboard = text;
+				window.qlipboard.text = window.qlipboard.clipboard = text
 			})
 		if(window.qlipboard.jqobj){
-			window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || window.qlipboard.clipboard;
+			window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || window.qlipboard.clipboard
 		}
 	}
 
@@ -97,9 +97,9 @@
 				!$("body").find("text").length
 			){
 				method = selector;
-				selector = 0;
+				selector = 0
 			}
-			method = "text";
+			method = "text"
 		}
 		if(this.attr("qlip-cut") || selector){ // If `this` is a cut element, there needs to be a selector so it can be pasted somewhere
 			if($("body").find(selector).length){
@@ -114,7 +114,7 @@
 				}
 			} else {
 				console.warn('Could not paste item\nUnable to find element that matched selector "' + selector + '"')
-				return this;
+				return this
 			}
 		}
 		let tag = this[0].tagName;
@@ -149,13 +149,13 @@
 			selec.removeAllRanges()
 			selec.addRange(range)
 		}
-		return this;
+		return this
 	};
 
 	$.cut = function(){
 		try {
 			if(isIE){
-				throw false;
+				throw false
 			} else {
 				if(isFF){
 					warning()
@@ -181,11 +181,11 @@
 	};
 
 	$.copy = function(text){
+		window.qlipboard = {};
 		if(text !== undefined){
 			$("<a>")
 				.html(text)
 				.copy()
-			window.qlipboard.jqobj = null;
 		} else {
 			try {
 				if(isFF){
@@ -197,15 +197,20 @@
 				if(isFF){
 					return
 				}
-				console.info("Trying navigator.clipboard.writeText() instead")
-				let text = "";
-				if(window.getSelection){
-					text = window.getSelection().toString();
-				} else if(document.selection && document.selection.type != "Control"){
-					text = document.selection.createRange().text;
+				if(navigator.clipboard){
+					console.info("Trying navigator.clipboard.writeText() instead")
+					let text = "";
+					if(window.getSelection){
+						text = window.getSelection().toString()
+					} else if(document.selection && document.selection.type != "Control"){
+						text = document.selection.createRange().text
+					}
+					warning()
+					navigator.clipboard.writeText(text)
+					setQlipboard()
+				} else {
+					console.error("Cannot copy text to clipboard")
 				}
-				warning()
-				navigator.clipboard.writeText(text)
 			}
 		}
 	};
@@ -242,7 +247,7 @@
 
 				window.qlipboard.text = null;
 				if(window.qlipboard.jqobj){
-					window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || "";
+					window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || ""
 				}
 			}
 		}
@@ -271,11 +276,17 @@
 					warning = nothing
 					break;
 			}
-		});
+		})
 		if(config.copyListener){
-			$(document).bind("copy", setQlipboard)
+			if($().bind){
+				$(document).bind("copy", setQlipboard)
+			} else {
+				$(document).on("copy", setQlipboard)
+			}
 		}
-	}
+	};
+	
+	$.jQlipboardVersion = "0.1.1"
 }((function(){
 	try{
 		return jQuery
