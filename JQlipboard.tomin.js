@@ -11,7 +11,7 @@
 		isFF = typeof InstallTrigger !== "undefined",
 		z = a => a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html(),
         setQlipboard = ($this) => {
-			let a = $this == undefined ? null : $this.clone();
+			let a = $this instanceof $ ? $this.clone() : null;
 			window.qlipboard.jqobj = a;
 		
 			navigator.clipboard.readText()
@@ -44,7 +44,8 @@
 			}
 			warning = nothing
 		},
-		nothing=a=>0;
+		nothing=a=>0,
+		exec=document.execCommand;
 
     $.fn.copy = function() {
         if (this.parent().length) {
@@ -131,19 +132,14 @@
 				if(isFF){
 					warning()
 				}
-                document.execCommand("cut")
+                return exec("cut")
             }
         } catch(err){
 			if(err){
 				console.error(err)
 				console.info("Trying $.copy() instead")
 			}
-			try {
-				$.copy()
-			} catch(err){
-				return
-			}
-			quotePASTEquote($(":focus"), "")
+			return $.copy() && quotePASTEquote($(":focus"), "")
         }
     };
 
@@ -158,12 +154,13 @@
 				if(isFF){
 					warning()
 				}
-				document.execCommand("copy")
+				return exec("copy")
 			} catch(err){
 				console.error(err)
 				if(isFF){
 					return
 				}
+				let success = true;
 				if(navigator.clipboard){
 					console.info("Trying navigator.clipboard.writeText() instead")
 					let text = "";
@@ -176,24 +173,27 @@
 					navigator.clipboard.writeText(text)
 					setQlipboard()
 				} else {
-					console.error("Cannot copy text to clipboard")
+					success = !!console.error("Cannot copy text to clipboard")
 				}
+				return success
 			}
 		}
 	};
 
     $.paste = function() {
         if (isIE) {
-            document.execCommand("paste")
+           return  exec("paste")
         } else {
+			let success = true;
 			warning()
             navigator.clipboard.readText()
                 .then(clipText => {
                     quotePASTEquote($(":focus"), clipText)
                 })
                 .catch(err => {
-                    console.error("Could not execute paste", err)
-                })
+					success = !!console.error("Could not execute paste", err)
+				})
+			return success
         }
     };
 
@@ -238,11 +238,7 @@
 			}
 		});
 		if(config.copyListener){
-			if($().bind){
-				$(document).bind("copy", setQlipboard)
-			} else {
-				$(document).on("copy", setQlipboard)
-			}
+			($(document).on || $(document).bind)("copy", setQlipboard)
 		}
 	};
 	

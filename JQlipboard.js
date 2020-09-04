@@ -20,7 +20,7 @@
 		  isFF = typeof InstallTrigger !== "undefined"; // Firefox browser exclusive. Checks if using Forefox
 
 	function setQlipboard($this){
-		window.qlipboard.jqobj = $this == undefined ? null : $this.clone();
+		window.qlipboard.jqobj = $this instanceof $ ? $this.clone() : null;
 
 		warning()
 		navigator.clipboard.readText()
@@ -160,23 +160,23 @@
 				if(isFF){
 					warning()
 				}
-				document.execCommand("cut")
+				return document.execCommand("cut")
 			}
 		} catch(err){
 			if(err){
 				console.error(err)
 				console.info("Trying $.copy() instead")
 			}
-			try {
-				$.copy()
-			} catch(err){
-				return
+			if($.copy()){
+				let focus = $(":focus"),
+					e = focus[0],
+					text = focus.val();
+				text = text.slice(0, e.selectionStart) + text.slice(e.selectionEnd);
+				focus.val(text)
+				return true
+			} else {
+				return false
 			}
-			let focus = $(":focus"),
-				e = focus[0],
-				text = focus.val();
-			text = text.slice(0, e.selectionStart) + text.slice(e.selectionEnd);
-			focus.val(text)
 		}
 	};
 
@@ -191,12 +191,13 @@
 				if(isFF){
 					warning()
 				}
-				document.execCommand("copy")
+				return document.execCommand("copy")
 			} catch(err){
 				console.error(err)
 				if(isFF){
-					return
+					return false
 				}
+				let success = true;
 				if(navigator.clipboard){
 					console.info("Trying navigator.clipboard.writeText() instead")
 					let text = "";
@@ -210,7 +211,9 @@
 					setQlipboard()
 				} else {
 					console.error("Cannot copy text to clipboard")
+					success = false
 				}
+				return success
 			}
 		}
 	};
@@ -219,6 +222,7 @@
 		if(isIE){
 			document.execCommand("paste")
 		} else {
+			let success = true;
 			warning()
 			navigator.clipboard.readText()
 				.then(clipText => {
@@ -230,7 +234,9 @@
 				})
 				.catch(err => {
 					console.error("Could not execute paste", err)
+					success = false
 				})
+			return success
 		}
 	};
 
