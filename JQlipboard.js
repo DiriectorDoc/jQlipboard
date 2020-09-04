@@ -57,6 +57,9 @@
 		return
 	}
 
+	/*
+	* @returns {jQuery} this
+	*/
 	$.fn.copy = function(){
 		if(this.parent().length){
 			this.select()
@@ -86,53 +89,42 @@
 		}
 	};
 
-	//needs an overhaul
-	$.fn.paste = function(selector, method){
-		if(!method){
-			if(
-				"element" == selector &&
-				"text" == selector &&
-				!$("body").find("element").length &&
-				!$("body").find("text").length
-			){
-				method = selector;
-				selector = 0
-			}
-			method = "text"
-		}
-		if(this.attr("qlip-cut") || selector){ // If `this` is a cut element, there needs to be a selector so it can be pasted somewhere
-			if($("body").find(selector).length){
-				let sel = $(selector),
-					tag = sel[0].tagName;
-				if("INPUT" == tag || "TEXTAREA" == tag){
-					return sel.val(window.qlipboard.text)
-				} else if("IMG" == tag){
-					return sel.append(window.qlipboard.jqobj.clone())
-				} else {
-					return method == "element" ? sel.append(window.qlipboard.jqobj.clone().removeAttr("qlip-cut")) : method == "text" ? sel.html(window.qlipboard.text) : sel
-				}
-			} else {
-				console.warn('Could not paste item\nUnable to find element that matched selector "' + selector + '"')
-				return this
-			}
-		}
+	/*
+	* @returns {jQuery} this
+	*/
+	$.fn.paste = function(){
 		let tag = this[0].tagName;
 		if("INPUT" == tag || "TEXTAREA" == tag){
-			return this.val(window.qlipboard.text)
-		} else if("IMG" == tag){
-			return this.append(window.qlipboard.jqobj.clone())
+			if(this.is(":focus") || (this[0] === document.activeElement && (this[0].type || this[0].href))){
+				return $.paste() ? this:this.val(window.qlipboard.text)
+			}
+			let $focus = $(":focus").length ? $(":focus"):$(document.activeElement);
+			this.focus()
+			if(!$.paste){
+				let text = this.val(),
+					e = this[0];
+				this.val(text.slice(0, e.selectionStart) + window.qlipboard.text + text.slice(e.selectionEnd))
+			}
+			$focus.focus()
+			return this
 		} else {
-			return method == "element" ? this.append(window.qlipboard.jqobj.clone().removeAttr("qlip-cut")) : method == "text" ? this.html(window.qlipboard.text) : this
+			return this.append(window.qlipboard.jqobj.clone())
 		}
 	};
 
+	/*
+	* @returns {jQuery} this
+	*/
 	$.fn.cut = function(){
 		return this
-			.attr("qlip-cut", true)
 			.copy()
 			.remove()
 	};
 
+
+	/*
+	* @returns {jQuery} this
+	*/
 	const $select = $.fn.select;
 	$.fn.select = function(elem, name, value, pass){
 		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
@@ -153,6 +145,9 @@
 		return this
 	};
 
+	/*
+	* @returns {boolean}
+	*/
 	$.cut = function(){
 		try {
 			if(isFF){
@@ -168,11 +163,11 @@
 				console.info("Trying $.copy() instead")
 			}
 			if($.copy()){
-				let focus = $(":focus"),
-					e = focus[0],
-					text = focus.val();
+				let $focus = $(":focus").length ? $(":focus"):$(document.activeElement),
+					e = $focus[0],
+					text = $focus.val();
 				text = text.slice(0, e.selectionStart) + text.slice(e.selectionEnd);
-				focus.val(text)
+				$focus.val(text)
 				return true
 			} else {
 				return false
@@ -180,6 +175,10 @@
 		}
 	};
 
+	/*
+	* @param {string} text
+	* @returns {boolean}
+	*/
 	$.copy = function(text){
 		window.qlipboard = {};
 		if(text !== undefined){
@@ -223,6 +222,9 @@
 		}
 	};
 
+	/*
+	* @returns {boolean}
+	*/
 	$.paste = function(){
 		try {
 			if(!document.execCommand("paste")){
@@ -237,11 +239,11 @@
 			warning()
 			navigator.clipboard.readText()
 				.then(clipText => {
-					let focus = $(":focus"),
-						e = focus[0],
-						text = focus.val();
+					let $focus = $(":focus").length ? $(":focus"):$(document.activeElement),
+						e = $focus[0],
+						text = $focus.val();
 					text = text.slice(0, e.selectionStart) + clipText + text.slice(e.selectionEnd);
-					focus.val(text)
+					$focus.val(text)
 				})
 				.catch(err => {
 					console.error("Could not execute paste", err)
@@ -302,8 +304,8 @@
 			}
 		}
 	};
-	
-	$.jQlipboardVersion = "0.1.1"
+
+	$.jQlipboardVersion = "0.1.2"
 }((function(){
 	try{
 		return jQuery
