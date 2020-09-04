@@ -7,8 +7,7 @@
 	
 	window.qlipboard = {};
 
-    let isIE = /*@cc_on!@*/false || !!document.documentMode,
-		isFF = typeof InstallTrigger !== "undefined",
+    let isFF = typeof InstallTrigger !== "undefined",
 		z = a => a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html(),
         setQlipboard = ($this) => {
 			let a = $this instanceof $ ? $this.clone() : null;
@@ -45,7 +44,7 @@
 			warning = nothing
 		},
 		nothing=a=>0,
-		exec=document.execCommand;
+		exec=a=>{return document.execCommand(a)||(b=>{throw 0})()};
 
     $.fn.copy = function() {
         if (this.parent().length) {
@@ -120,20 +119,18 @@
             range.selectNode(this[0])
             selec.removeAllRanges()
             selec.addRange(range)
-        }
+        } else {
+			console.warn("Could not select element")
+		}
         return this;
     };
 
     $.cut = function(){
         try {
-            if(isIE){
-                throw 0;
-            } else {
-				if(isFF){
-					warning()
-				}
-                return exec("cut")
-            }
+            if(isFF){
+				warning()
+			}
+			return exec("cut")
         } catch(err){
 			if(err){
 				console.error(err)
@@ -156,9 +153,11 @@
 				}
 				return exec("copy")
 			} catch(err){
-				console.error(err)
+				if(err){
+					console.error(err)
+				}
 				if(isFF){
-					return
+					return false
 				}
 				let success = true;
 				if(navigator.clipboard){
@@ -181,9 +180,12 @@
 	};
 
     $.paste = function() {
-        if (isIE) {
-           return  exec("paste")
-        } else {
+        try {
+           return exec("paste")
+        } catch(e){
+			if(e){
+				console.warn(e)
+			}
 			let success = true;
 			warning()
             navigator.clipboard.readText()

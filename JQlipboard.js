@@ -16,8 +16,7 @@
 
 	window.qlipboard = {};
 
-	const isIE = /*@cc_on!@*/false || !!document.documentMode, // IE browser exclusive. Checks if using IE
-		  isFF = typeof InstallTrigger !== "undefined"; // Firefox browser exclusive. Checks if using Forefox
+	const isFF = typeof InstallTrigger !== "undefined"; // Firefox browser exclusive. Checks if using Forefox
 
 	function setQlipboard($this){
 		window.qlipboard.jqobj = $this instanceof $ ? $this.clone() : null;
@@ -148,20 +147,21 @@
 			range.selectNode(this[0])
 			selec.removeAllRanges()
 			selec.addRange(range)
+		} else {
+			console.warn("Could not select element")
 		}
 		return this
 	};
 
 	$.cut = function(){
 		try {
-			if(isIE){
-				throw false
-			} else {
-				if(isFF){
-					warning()
-				}
-				return document.execCommand("cut")
+			if(isFF){
+				warning()
 			}
+			if(!document.execCommand("cut")){
+				throw false
+			}
+			return true
 		} catch(err){
 			if(err){
 				console.error(err)
@@ -191,9 +191,14 @@
 				if(isFF){
 					warning()
 				}
-				return document.execCommand("copy")
+				if(!document.execCommand("copy")){
+					throw false
+				}
+				return true
 			} catch(err){
-				console.error(err)
+				if(err){
+					console.error(err)
+				}
 				if(isFF){
 					return false
 				}
@@ -219,9 +224,15 @@
 	};
 
 	$.paste = function(){
-		if(isIE){
-			document.execCommand("paste")
-		} else {
+		try {
+			if(!document.execCommand("paste")){
+				throw false
+			}
+			return true
+		} catch(err){
+			if(err){
+				console.warn(err)
+			}
 			let success = true;
 			warning()
 			navigator.clipboard.readText()
