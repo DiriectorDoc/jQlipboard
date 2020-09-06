@@ -110,12 +110,17 @@
 			let range = document.createRange(),
 				selec = window.getSelection();
 			range.selectNode(this[0])
-			selec.removeAllRanges()
+			$.deselect()
 			selec.addRange(range)
 		} else {
 			console.warn("Could not select element")
 		}
 		return this;
+	};
+
+	$.deselect = function(){
+		let selec=document.selection || window.getSelection();
+		(selec.empty || selec.removeAllRanges)()
 	};
 
 	$.cut = function(){
@@ -152,7 +157,6 @@
 				if(isFF){
 					return false
 				}
-				let success = true;
 				if(navigator.clipboard){
 					console.info("Trying navigator.clipboard.writeText() instead")
 					let text = "";
@@ -164,10 +168,9 @@
 					warning()
 					navigator.clipboard.writeText(text)
 					setQlipboard()
-				} else {
-					success = !!console.error("Cannot copy text to clipboard")
+					return true
 				}
-				return success
+				return = !!console.error("Cannot copy text to clipboard")
 			}
 		}
 	};

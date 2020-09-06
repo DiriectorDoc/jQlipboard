@@ -121,7 +121,6 @@
 			.remove()
 	};
 
-
 	/*
 	* @returns {jQuery} this
 	*/
@@ -137,12 +136,23 @@
 			let range = document.createRange(),
 				selec = window.getSelection();
 			range.selectNode(this[0])
-			selec.removeAllRanges()
+			$.deselect()
 			selec.addRange(range)
 		} else {
 			console.warn("Could not select element")
 		}
 		return this
+	};
+
+	/*
+	* @returns {undefined}
+	*/
+	$.deselect = function(){
+		if(document.selection){
+			document.selection.empty()
+		} else if(window.getSelection){
+			window.getSelection().removeAllRanges()
+		}
 	};
 
 	/*
@@ -169,9 +179,8 @@
 				text = text.slice(0, e.selectionStart) + text.slice(e.selectionEnd);
 				$focus.val(text)
 				return true
-			} else {
-				return false
 			}
+			return false
 		}
 	};
 
@@ -201,7 +210,6 @@
 				if(isFF){
 					return false
 				}
-				let success = true;
 				if(navigator.clipboard){
 					console.info("Trying navigator.clipboard.writeText() instead")
 					let text = "";
@@ -213,11 +221,10 @@
 					warning()
 					navigator.clipboard.writeText(text)
 					setQlipboard()
-				} else {
-					console.error("Cannot copy text to clipboard")
-					success = false
+					return true;
 				}
-				return success
+				console.error("Cannot copy text to clipboard")
+				return false
 			}
 		}
 	};
