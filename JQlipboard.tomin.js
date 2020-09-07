@@ -7,40 +7,25 @@
 
 	window.qlipboard = {};
 
-	let isFF = typeof InstallTrigger !== "undefined",
-		z = a => a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html(),
-		setQlipboard = ($this) => {
+	let setQlipboard = ($this) => {
 			let a = $this instanceof $ ? $this.clone() : null;
 			window.qlipboard.jqobj = a;
+			window.qlipboard.text = "";
 
 			navigator.clipboard.readText()
 				.then(text => {
-					window.qlipboard.text = window.qlipboard.clipboard = text;
+					window.qlipboard.text = text;
 				})
+				.catch(warning)
 			if(a){
-				window.qlipboard.text = z(a) || window.qlipboard.clipboard;
+				window.qlipboard.text = a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html() || "";
 			}
 		},
 		quotePASTEquote = ($this, a) => $this.val($this.val().slice(0, $this[0].selectionStart) + a +$this.val().slice($this[0].selectionEnd)),
-		warning= a=>{
-			let warn = z=>{alert("Browser has been denied access clipboard. Some features may not work until permission is granted.\n" +
-			'To grant permission, go into your browser setting and allow "Clipboard"')};
-			if(isFF){
-				browser.permissions.request({
-						permissions: ["clipboardWrite"]
-					})
-					.then(responce => { // Will be either true or false
-						if(!responce){
-							warn()
-						}
-					})
-			} else {
-				navigator.permissions.query({name: "clipboard-read"}).then(result => {
-					if(result.state == "denied"){
-						warn()
-					}
-				})
-			}
+		warning= err=>{
+			console.error(err)
+			console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
+			console.info('To agrant permission, go into your browser setting and allow "Clipboard"')
 			warning = nothing
 		},
 		nothing=a=>0,
@@ -125,9 +110,6 @@
 
 	$.cut = function(){
 		try {
-			if(isFF){
-				warning()
-			}
 			return exec("cut")
 		} catch(err){
 			if(err){
@@ -146,31 +128,31 @@
 				.copy()
 		} else {
 			try {
-				if(isFF){
-					warning()
-				}
 				return exec("copy")
 			} catch(err){
 				if(err){
 					console.error(err)
 				}
-				if(isFF){
-					return false
-				}
+				let error = a=>!!console.error("Cannot copy text to clipboard");
 				if(navigator.clipboard){
 					console.info("Trying navigator.clipboard.writeText() instead")
-					let text = "";
+					let text = "",
+						success = true;
 					if(window.getSelection){
 						text = window.getSelection().toString();
 					} else if(document.selection && document.selection.type != "Control"){
 						text = document.selection.createRange().text;
 					}
-					warning()
 					navigator.clipboard.writeText(text)
-					setQlipboard()
-					return true
+						.then(x=>{
+							setQlipboard()
+						})
+						.catch(y=>{
+							success = error()
+						})
+					return success;
 				}
-				return = !!console.error("Cannot copy text to clipboard")
+				return error()
 			}
 		}
 	};
@@ -183,7 +165,6 @@
 				console.warn(e)
 			}
 			let success = true;
-			warning()
 			navigator.clipboard.readText()
 				.then(clipText => {
 					quotePASTEquote(focused(), clipText)
@@ -198,43 +179,13 @@
 	$.jQlipboard = function(config){
 		config = {
 			permissionPrompt: config.permissionPrompt || "when needed",
-			permissionAlert: config.permissionAlert || "when needed",
 			copyListener: config.copyListener || config.copyListener === undefined
-		}
-		if(!config.clipboardVar){
-			delete window.qlipboard.clipboard;
-			setQlipboard = function($this){
-				let a = $this == undefined ? null : $this.clone();
-				window.qlipboard.jqobj = a;
-				window.qlipboard.text = null;
-				if(a){
-					window.qlipboard.text = z(a) || "";
-				}
-			}
-		}
+		};
 		if(config.permissionPrompt == "immediate"){
-			navigator.clipboard.readText().then(nothing)
+			navigator.clipboard.readText()
+				.then(nothing)
+				.catch(warning)
 		}
-		switch(config.permissionAlert){
-			case "immediate":
-				warning()
-			case "never":
-				warning = nothing
-		}
-		navigator.permissions.query({name: "clipboard-read"}).then(result => {
-			switch(result.state){
-				case "denied":
-				case "prompt":
-					console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
-					console.info('To agrant permission, go into your browser setting and allow "Clipboard"')
-					if(config.permissionAlert == "never"){
-						warning = nothing
-					}
-					break;
-				case "granted":
-					warning = nothing
-			}
-		});
 		if(config.copyListener){
 			($(document).on || $(document).bind)("copy", setQlipboard)
 		}
