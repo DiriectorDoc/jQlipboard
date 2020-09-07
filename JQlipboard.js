@@ -1,5 +1,5 @@
 /**
- *	jQlipboard (v0.1.1)
+ *	jQlipboard (v0.1.2)
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -16,40 +16,24 @@
 
 	window.qlipboard = {};
 
-	const isFF = typeof InstallTrigger !== "undefined"; // Firefox browser exclusive. Checks if using Forefox
-
 	function setQlipboard($this){
 		window.qlipboard.jqobj = $this instanceof $ ? $this.clone() : null;
+		window.qlipboard.text = "";
 
-		warning()
 		navigator.clipboard.readText()
 			.then(text => {
-				window.qlipboard.text = window.qlipboard.clipboard = text
+				window.qlipboard.text = text
 			})
+			.catch(warning)
 		if(window.qlipboard.jqobj){
-			window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || window.qlipboard.clipboard
+			window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || ""
 		}
 	}
 
-	function warning(){
-		let message = "Browser has been denied access clipboard. Some features may not work until permission is granted.\n" +
-			'To grant permission, go into your browser setting and allow "Clipboard"';
-		if(isFF){
-			browser.permissions.request({
-					permissions: ["clipboardWrite"]
-				})
-				.then(responce => { // Will be either true or false
-					if(!responce){
-						alert(message)
-					}
-				})
-		} else {
-			navigator.permissions.query({name: "clipboard-read"}).then(result => {
-				if(result.state == "denied"){
-					alert(message)
-				}
-			})
-		}
+	function warning(err){
+		console.error(err)
+		console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
+		console.info('To agrant permission, go into your browser setting and allow "Clipboard"')
 		warning = nothing
 	}
 
@@ -57,6 +41,9 @@
 		return
 	}
 
+	/*
+	* @returns {jQuery} this
+	*/
 	$.fn.copy = function(){
 		if(this.parent().length){
 			this.select()
@@ -86,53 +73,41 @@
 		}
 	};
 
-	//needs an overhaul
-	$.fn.paste = function(selector, method){
-		if(!method){
-			if(
-				"element" == selector &&
-				"text" == selector &&
-				!$("body").find("element").length &&
-				!$("body").find("text").length
-			){
-				method = selector;
-				selector = 0
-			}
-			method = "text"
-		}
-		if(this.attr("qlip-cut") || selector){ // If `this` is a cut element, there needs to be a selector so it can be pasted somewhere
-			if($("body").find(selector).length){
-				let sel = $(selector),
-					tag = sel[0].tagName;
-				if("INPUT" == tag || "TEXTAREA" == tag){
-					return sel.val(window.qlipboard.text)
-				} else if("IMG" == tag){
-					return sel.append(window.qlipboard.jqobj.clone())
-				} else {
-					return method == "element" ? sel.append(window.qlipboard.jqobj.clone().removeAttr("qlip-cut")) : method == "text" ? sel.html(window.qlipboard.text) : sel
-				}
-			} else {
-				console.warn('Could not paste item\nUnable to find element that matched selector "' + selector + '"')
-				return this
-			}
-		}
+	/*
+	* @returns {jQuery} this
+	*/
+	$.fn.paste = function(){
 		let tag = this[0].tagName;
 		if("INPUT" == tag || "TEXTAREA" == tag){
-			return this.val(window.qlipboard.text)
-		} else if("IMG" == tag){
-			return this.append(window.qlipboard.jqobj.clone())
+			if(this.is(":focus") || (this[0] === document.activeElement && (this[0].type || this[0].href))){
+				return $.paste() ? this:this.val(window.qlipboard.text)
+			}
+			let $focus = $(":focus").length ? $(":focus"):$(document.activeElement);
+			this.focus()
+			if(!$.paste){
+				let text = this.val(),
+					e = this[0];
+				this.val(text.slice(0, e.selectionStart) + window.qlipboard.text + text.slice(e.selectionEnd))
+			}
+			$focus.focus()
+			return this
 		} else {
-			return method == "element" ? this.append(window.qlipboard.jqobj.clone().removeAttr("qlip-cut")) : method == "text" ? this.html(window.qlipboard.text) : this
+			return this.append(window.qlipboard.jqobj.clone())
 		}
 	};
 
+	/*
+	* @returns {jQuery} this
+	*/
 	$.fn.cut = function(){
 		return this
-			.attr("qlip-cut", true)
 			.copy()
 			.remove()
 	};
 
+	/*
+	* @returns {jQuery} this
+	*/
 	const $select = $.fn.select;
 	$.fn.select = function(elem, name, value, pass){
 		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
@@ -145,7 +120,7 @@
 			let range = document.createRange(),
 				selec = window.getSelection();
 			range.selectNode(this[0])
-			selec.removeAllRanges()
+			$.deselect()
 			selec.addRange(range)
 		} else {
 			console.warn("Could not select element")
@@ -153,11 +128,22 @@
 		return this
 	};
 
+	/*
+	* @returns {undefined}
+	*/
+	$.deselect = function(){
+		if(document.selection){
+			document.selection.empty()
+		} else if(window.getSelection){
+			window.getSelection().removeAllRanges()
+		}
+	};
+
+	/*
+	* @returns {boolean}
+	*/
 	$.cut = function(){
 		try {
-			if(isFF){
-				warning()
-			}
 			if(!document.execCommand("cut")){
 				throw false
 			}
@@ -168,18 +154,21 @@
 				console.info("Trying $.copy() instead")
 			}
 			if($.copy()){
-				let focus = $(":focus"),
-					e = focus[0],
-					text = focus.val();
+				let $focus = $(":focus").length ? $(":focus"):$(document.activeElement),
+					e = $focus[0],
+					text = $focus.val();
 				text = text.slice(0, e.selectionStart) + text.slice(e.selectionEnd);
-				focus.val(text)
+				$focus.val(text)
 				return true
-			} else {
-				return false
 			}
+			return false
 		}
 	};
 
+	/*
+	* @param {string} text
+	* @returns {boolean}
+	*/
 	$.copy = function(text){
 		window.qlipboard = {};
 		if(text !== undefined){
@@ -188,9 +177,6 @@
 				.copy()
 		} else {
 			try {
-				if(isFF){
-					warning()
-				}
 				if(!document.execCommand("copy")){
 					throw false
 				}
@@ -199,30 +185,34 @@
 				if(err){
 					console.error(err)
 				}
-				if(isFF){
-					return false
-				}
-				let success = true;
 				if(navigator.clipboard){
 					console.info("Trying navigator.clipboard.writeText() instead")
-					let text = "";
+					let text = "",
+						success = true;
 					if(window.getSelection){
 						text = window.getSelection().toString()
 					} else if(document.selection && document.selection.type != "Control"){
 						text = document.selection.createRange().text
 					}
-					warning()
 					navigator.clipboard.writeText(text)
-					setQlipboard()
-				} else {
-					console.error("Cannot copy text to clipboard")
-					success = false
+						.then(function(){
+							setQlipboard()
+						})
+						.catch(function(){
+							console.error("Cannot copy text to clipboard")
+							success = false
+						})
+					return success;
 				}
-				return success
+				console.error("Cannot copy text to clipboard")
+				return false
 			}
 		}
 	};
 
+	/*
+	* @returns {boolean}
+	*/
 	$.paste = function(){
 		try {
 			if(!document.execCommand("paste")){
@@ -234,14 +224,13 @@
 				console.warn(err)
 			}
 			let success = true;
-			warning()
 			navigator.clipboard.readText()
 				.then(clipText => {
-					let focus = $(":focus"),
-						e = focus[0],
-						text = focus.val();
+					let $focus = $(":focus").length ? $(":focus"):$(document.activeElement),
+						e = $focus[0],
+						text = $focus.val();
 					text = text.slice(0, e.selectionStart) + clipText + text.slice(e.selectionEnd);
-					focus.val(text)
+					$focus.val(text)
 				})
 				.catch(err => {
 					console.error("Could not execute paste", err)
@@ -254,46 +243,13 @@
 	$.jQlipboard = function(config){
 		config = {
 			permissionPrompt: config.permissionPrompt || "when needed",
-			permissionAlert: config.permissionAlert || "when needed",
 			copyListener: config.copyListener || config.copyListener === undefined
 		}
-		if(!config.clipboardVar){
-			delete window.qlipboard.clipboard;
-			setQlipboard = function($this){
-				window.qlipboard.jqobj = $this == undefined ? null : $this.clone();
-
-				window.qlipboard.text = null;
-				if(window.qlipboard.jqobj){
-					window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || ""
-				}
-			}
-		}
 		if(config.permissionPrompt == "immediate"){
-			navigator.clipboard.readText().then(nothing)
+			navigator.clipboard.readText()
+				.then(nothing)
+				.catch(warning)
 		}
-		switch(config.permissionAlert){
-			case "immediate":
-				warning()
-				break;
-			case "never":
-				warning = nothing
-				break;
-		}
-		navigator.permissions.query({name: "clipboard-read"}).then(result => {
-			switch(result.state){
-				case "denied":
-				case "prompt":
-					console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
-					console.info('To agrant permission, go into your browser setting and allow "Clipboard"')
-					if(config.permissionAlert == "never"){
-						warning = nothing
-					}
-					break;
-				case "granted":
-					warning = nothing
-					break;
-			}
-		})
 		if(config.copyListener){
 			if($().bind){
 				$(document).bind("copy", setQlipboard)
@@ -302,8 +258,8 @@
 			}
 		}
 	};
-	
-	$.jQlipboardVersion = "0.1.1"
+
+	$.jQlipboardVersion = "0.1.2"
 }((function(){
 	try{
 		return jQuery
