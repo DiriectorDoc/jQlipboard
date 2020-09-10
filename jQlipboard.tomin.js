@@ -104,8 +104,11 @@
 	};
 
 	$.deselect = function(){
-		let selec=document.selection || window.getSelection();
-		(selec.empty || selec.removeAllRanges)()
+		if(document.selection){
+			document.selection.empty()
+		} else if(window.getSelection){
+			window.getSelection().removeAllRanges()
+		}
 	};
 
 	$.cut = function(){
