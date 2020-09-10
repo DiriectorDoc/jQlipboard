@@ -1,5 +1,5 @@
 /**
- *	jQlipboard (v0.1.2)
+ *	jQlipboard (v0.1.3)
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -33,7 +33,7 @@
 	function warning(err){
 		console.error(err)
 		console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
-		console.info('To agrant permission, go into your browser setting and allow "Clipboard"')
+		console.info('To grant permission, go into your browser setting and allow "Clipboard"')
 		warning = nothing
 	}
 
@@ -79,10 +79,10 @@
 	$.fn.paste = function(){
 		let tag = this[0].tagName;
 		if("INPUT" == tag || "TEXTAREA" == tag){
-			if(this.is(":focus") || (this[0] === document.activeElement && (this[0].type || this[0].href))){
+			if(this.is(":focus") || this[0] === document.activeElement){
 				return $.paste() ? this:this.val(window.qlipboard.text)
 			}
-			let $focus = $(":focus").length ? $(":focus"):$(document.activeElement);
+			let $focus = $(document.activeElement);
 			this.focus()
 			if(!$.paste){
 				let text = this.val(),
@@ -154,7 +154,7 @@
 				console.info("Trying $.copy() instead")
 			}
 			if($.copy()){
-				let $focus = $(":focus").length ? $(":focus"):$(document.activeElement),
+				let $focus = $(document.activeElement),
 					e = $focus[0],
 					text = $focus.val();
 				text = text.slice(0, e.selectionStart) + text.slice(e.selectionEnd);
@@ -226,7 +226,7 @@
 			let success = true;
 			navigator.clipboard.readText()
 				.then(clipText => {
-					let $focus = $(":focus").length ? $(":focus"):$(document.activeElement),
+					let $focus = $(document.activeElement),
 						e = $focus[0],
 						text = $focus.val();
 					text = text.slice(0, e.selectionStart) + clipText + text.slice(e.selectionEnd);
@@ -251,15 +251,15 @@
 				.catch(warning)
 		}
 		if(config.copyListener){
-			if($().bind){
-				$(document).bind("copy", setQlipboard)
-			} else {
+			if($().on){
 				$(document).on("copy", setQlipboard)
+			} else {
+				$(document).bind("copy", setQlipboard)
 			}
 		}
 	};
 
-	$.jQlipboardVersion = "0.1.2"
+	$.jQlipboardVersion = "0.1.3"
 }((function(){
 	try{
 		return jQuery

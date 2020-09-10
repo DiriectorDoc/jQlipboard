@@ -25,12 +25,13 @@
 		warning= err=>{
 			console.error(err)
 			console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
-			console.info('To agrant permission, go into your browser setting and allow "Clipboard"')
+			console.info('To grant permission, go into your browser setting and allow "Clipboard"')
 			warning = nothing
 		},
 		nothing=a=>0,
 		exec=a=>{return document.execCommand(a)||(b=>{throw 0})()},
-		focused=a=>$(":focus").length ? $(":focus"):$(document.activeElement);
+		focused=a=>$(document.activeElement),
+		$select = $.fn.select;
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
@@ -62,7 +63,7 @@
 	$.fn.paste = function(){
 		let tag = this[0].tagName;
 		if("INPUT" == tag || "TEXTAREA" == tag){
-			if(this.is(":focus") || (this[0] === document.activeElement && (this[0].type || this[0].href))){
+			if(this.is(":focus") || this[0] === document.activeElement){
 				return $.paste() ? this:this.val(window.qlipboard.text)
 			}
 			let $focus = focused();
@@ -83,7 +84,6 @@
 			.remove()
 	};
 
-	let $select = $.fn.select;
 	$.fn.select = function(elem, name, value, pass) {
 		if ("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName)
 			return $select(elem, name, value, pass);
@@ -191,7 +191,7 @@
 		}
 	};
 
-	$.jQlipboardVersion = "0.1.2"
+	$.jQlipboardVersion = "0.1.3"
 }((function(){
 	try{
 		return jQuery
