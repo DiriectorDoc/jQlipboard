@@ -180,21 +180,27 @@
 	};
 
 	$.jQlipboard = function(config){
-		config = {
-			permissionPrompt: config.permissionPrompt || "when needed",
-			copyListener: config.copyListener || config.copyListener === undefined
-		};
-		if(config.permissionPrompt == "immediate"){
+		let a = !!config.pasting;
+		if(!a){
+			setQlipboard = nothing;
+			delete $.paste;
+			delete window.qlipboard
+		}
+		if(config.permissionPrompt == "immediate" && a){
 			navigator.clipboard.readText()
 				.then(nothing)
 				.catch(warning)
 		}
-		if(config.copyListener){
-			($(document).on || $(document).bind)("copy", setQlipboard)
+		if(config.copyListener || config.copyListener === undefined){
+			if($().on){
+				$(document).on("copy", setQlipboard)
+			} else {
+				$(document).bind("copy", setQlipboard)
+			}
 		}
 	};
 
-	$.jQlipboardVersion = "0.1.3"
+	$.jQlipboardVersion = "0.1.4"
 }((function(){
 	try{
 		return jQuery

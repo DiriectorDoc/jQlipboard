@@ -1,5 +1,5 @@
 /**
- *	jQlipboard (v0.1.3)
+ *	jQlipboard v0.1.4
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -243,9 +243,15 @@
 	$.jQlipboard = function(config){
 		config = {
 			permissionPrompt: config.permissionPrompt || "when needed",
-			copyListener: config.copyListener || config.copyListener === undefined
+			copyListener: config.copyListener || config.copyListener === undefined,
+			pasting: config.pasting || false
 		}
-		if(config.permissionPrompt == "immediate"){
+		if(!config.pasting){
+			setQlipboard = nothing;
+			delete $.paste;
+			delete window.qlipboard
+		}
+		if(config.permissionPrompt == "immediate" && config.pasting){
 			navigator.clipboard.readText()
 				.then(nothing)
 				.catch(warning)
@@ -259,7 +265,7 @@
 		}
 	};
 
-	$.jQlipboardVersion = "0.1.3"
+	$.jQlipboardVersion = "0.1.4"
 }((function(){
 	try{
 		return jQuery
