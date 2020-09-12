@@ -5,20 +5,23 @@
 
 	if(!$) return;
 
-	window.qlipboard = {};
+	$.jQlipboardVersion = "0.1.5";
 
-	let setQlipboard = ($this) => {
-			let a = $this instanceof $ ? $this.clone() : null;
-			window.qlipboard.jqobj = a;
-			window.qlipboard.text = "";
+	let pasteOn,
+		setQlipboard = ($this) => {
+			if(pasteOn){
+				let a = $this instanceof $ ? $this.clone() : null;
+				window.qlipboard.jqobj = a;
+				window.qlipboard.text = "";
 
-			navigator.clipboard.readText()
-				.then(text => {
-					window.qlipboard.text = text;
-				})
-				.catch(warning)
-			if(a){
-				window.qlipboard.text = a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html() || "";
+				navigator.clipboard.readText()
+					.then(text => {
+						window.qlipboard.text = text;
+					})
+					.catch(warning)
+				if(a){
+					window.qlipboard.text = a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html() || "";
+				}
 			}
 		},
 		quotePASTEquote = ($this, a) => $this.val($this.val().slice(0, $this[0].selectionStart) + a +$this.val().slice($this[0].selectionEnd)),
@@ -29,9 +32,10 @@
 			warning = nothing
 		},
 		nothing=a=>0,
-		exec=a=>{return document.execCommand(a)||(b=>{throw 0})()},
+		exec=a=>document.execCommand(a)||(b=>{throw 0})(),
 		focused=a=>$(document.activeElement),
-		$select = $.fn.select;
+		$select = $.fn.select,
+		warn = a=>console.warn("Pasting is truned off by default. You need to enable it upon intitalization.");
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
@@ -61,21 +65,25 @@
 	};
 
 	$.fn.paste = function(){
-		let tag = this[0].tagName;
-		if("INPUT" == tag || "TEXTAREA" == tag){
-			if(this.is(":focus") || this[0] === document.activeElement){
-				return $.paste() ? this:this.val(window.qlipboard.text)
+		if(pasteOn){
+			let tag = this[0].tagName;
+			if("INPUT" == tag || "TEXTAREA" == tag){
+				if(this.is(":focus") || this[0] === document.activeElement){
+					return $.paste() ? this:this.val(window.qlipboard.text)
+				}
+				let $focus = focused();
+				this.focus()
+				if(!$.paste){
+					quotePASTEquote(this, window.qlipboard.text)
+				}
+				$focus.focus()
+				return this
+			} else {
+				return this.append(window.qlipboard.jqobj.clone())
 			}
-			let $focus = focused();
-			this.focus()
-			if(!$.paste){
-				quotePASTEquote(this, window.qlipboard.text)
-			}
-			$focus.focus()
-			return this
-		} else {
-			return this.append(window.qlipboard.jqobj.clone())
 		}
+		warn()
+		return this
 	};
 
 	$.fn.cut = function() {
@@ -124,7 +132,6 @@
 	};
 
 	$.copy = function(text){
-		window.qlipboard = {};
 		if(text !== undefined){
 			$("<a>")
 				.html(text)
@@ -161,46 +168,47 @@
 	};
 
 	$.paste = function() {
-		try {
-		   return exec("paste")
-		} catch(e){
-			if(e){
-				console.warn(e)
+		if(pasteOn){
+			try {
+			   return exec("paste")
+			} catch(e){
+				if(e){
+					console.warn(e)
+				}
+				let success = true;
+				navigator.clipboard.readText()
+					.then(clipText => {
+						quotePASTEquote(focused(), clipText)
+					})
+					.catch(err => {
+						success = !!console.error("Could not execute paste", err)
+					})
+				return success
 			}
-			let success = true;
-			navigator.clipboard.readText()
-				.then(clipText => {
-					quotePASTEquote(focused(), clipText)
-				})
-				.catch(err => {
-					success = !!console.error("Could not execute paste", err)
-				})
-			return success
 		}
+		return !!warn()
 	};
 
-	$.jQlipboard = function(config){
-		let a = !!config.pasting;
-		if(!a){
-			setQlipboard = nothing;
-			delete $.paste;
+	($.jQlipboard = function(config){
+		config = config||0;
+		if(pasteOn = config.pasting){
+			window.qlipboard = {}
+		} else {
 			delete window.qlipboard
 		}
-		if(config.permissionPrompt == "immediate" && a){
+		if(config.permissionPrompt == "immediate" && pasteOn){
 			navigator.clipboard.readText()
 				.then(nothing)
 				.catch(warning)
 		}
-		if(config.copyListener || config.copyListener === undefined){
+		if((config.copyListener || config.copyListener === undefined)&&pasteOn){
 			if($().on){
 				$(document).on("copy", setQlipboard)
 			} else {
 				$(document).bind("copy", setQlipboard)
 			}
 		}
-	};
-
-	$.jQlipboardVersion = "0.1.4"
+	})()
 }((function(){
 	try{
 		return jQuery
