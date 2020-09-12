@@ -272,7 +272,7 @@
 				.catch(warning)
 		}
 		if(config.copyListener && config.pasting){
-			if($().on){
+			if($.fn.on){
 				$(document).on("copy", setQlipboard)
 			} else {
 				$(document).bind("copy", setQlipboard)
