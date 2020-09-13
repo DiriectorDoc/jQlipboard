@@ -1,5 +1,5 @@
 /**
- *	jQlipboard v0.1.5
+ *	jQlipboard v0.1.6
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -14,7 +14,7 @@
 
 	if(!$) return;
 
-	$.jQlipboardVersion = "0.1.5";
+	$.jQlipboardVersion = "0.1.6";
 	let pasteOn;
 
 	function setQlipboard($this){
