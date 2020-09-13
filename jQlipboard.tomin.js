@@ -5,7 +5,7 @@
 
 	if(!$) return;
 
-	$.jQlipboardVersion = "0.1.5";
+	$.jQlipboardVersion = "0.1.6";
 
 	let pasteOn,
 		setQlipboard = ($this) => {
@@ -26,16 +26,20 @@
 		},
 		quotePASTEquote = ($this, a) => $this.val($this.val().slice(0, $this[0].selectionStart) + a +$this.val().slice($this[0].selectionEnd)),
 		warning= err=>{
-			console.error(err)
-			console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
-			console.info('To grant permission, go into your browser setting and allow "Clipboard"')
+			error(err)
+			warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
+			info('To grant permission, go into your browser setting and allow "Clipboard"')
 			warning = nothing
 		},
 		nothing=a=>0,
 		exec=a=>document.execCommand(a)||(b=>{throw 0})(),
 		focused=a=>$(document.activeElement),
 		$select = $.fn.select,
-		warn = a=>console.warn("Pasting is truned off by default. You need to enable it upon intitalization.");
+		c=console,
+		warn = c.warn,
+		error = c.error,
+		info = c.info,
+		warnPaste = a=>warn("Pasting is truned off by default. You need to enable it upon intitalization.");
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
@@ -82,7 +86,7 @@
 				return this.append(window.qlipboard.jqobj.clone())
 			}
 		}
-		warn()
+		warnPaste()
 		return this
 	};
 
@@ -106,7 +110,7 @@
 			$.deselect()
 			selec.addRange(range)
 		} else {
-			console.warn("Could not select element")
+			warn("Could not select element")
 		}
 		return this;
 	};
@@ -124,8 +128,8 @@
 			return exec("cut")
 		} catch(err){
 			if(err){
-				console.error(err)
-				console.info("Trying $.copy() instead")
+				error(err)
+				info("Trying $.copy() instead")
 			}
 			return $.copy() && quotePASTEquote(focused(), "")
 		}
@@ -141,11 +145,11 @@
 				return exec("copy")
 			} catch(err){
 				if(err){
-					console.error(err)
+					error(err)
 				}
-				let error = a=>!!console.error("Cannot copy text to clipboard");
+				let error = a=>!!error("Cannot copy text to clipboard");
 				if(navigator.clipboard){
-					console.info("Trying navigator.clipboard.writeText() instead")
+					info("Trying navigator.clipboard.writeText() instead")
 					let text = "",
 						success = true;
 					if(window.getSelection){
@@ -173,7 +177,7 @@
 			   return exec("paste")
 			} catch(e){
 				if(e){
-					console.warn(e)
+					warn(e)
 				}
 				let success = true;
 				navigator.clipboard.readText()
@@ -181,12 +185,12 @@
 						quotePASTEquote(focused(), clipText)
 					})
 					.catch(err => {
-						success = !!console.error("Could not execute paste", err)
+						success = !!error("Could not execute paste", err)
 					})
 				return success
 			}
 		}
-		return !!warn()
+		return !!warnPaste()
 	};
 
 	($.jQlipboard = function(config){
