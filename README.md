@@ -45,7 +45,9 @@ Using `$(...).copy()` on any other type of element will instead copy the inside 
 ```
 
 ## Pasting
-Using `$.paste()` is identical to pasting using regular means, such as <kbd>Ctrl</kbd> + <kbd>V</kbd>:
+Using `$.paste()` is identical to pasting using regular means, such as <kbd>Ctrl</kbd> + <kbd>V</kbd>.
+
+> **Note:** By default, pasting is not enabled. Having it off by default saves RAM and avjoids unnecessary permission prompts. To enable it, use `{pasting: true}` in your [initialization](#initilization) config.
 
 ```javascript
 /* May throw an error if used while the document is not focused */
@@ -88,16 +90,24 @@ Using `$(...).select()` will highlight the target element. This will work on alm
 </body>
 ```
 
+Calling the function `$.deselect()` will nullify any selection there may be on the page.
+
 ## Initilization
-Initialization is not manditory. If jQlipboard is not initilized, it will simply use the default config:
+Initialization is not manditory. If jQlipboard is not initilized, it will simply use the default config. Only initialize if you plan on using the paste feature somewhere on your page.
 
 ```javascript
 $.jQlipboard({
+	/*
+	 * Enables the paste command. Off by default to save ram
+	 * and avoid unnecessary permission prompts.
+	 * All other config options are relient on this one. If
+	 * this is set to false or not at all, any7 other config
+	 * option will be ignored.
+	 */
+	pasting: /* true, false (default) */,
+			  
 	// Determines when the page will request permession to use the clipboard; on load or when needed
 	permissionPrompt: /* "immediate", "when needed" (default) */,
-
-	// Determins when the page will alert the user that they have not given their permission to access the clipboard
-	permissionAlert: /* "immediate", "when needed" (default), "never" */,
 
 	// Detects when you modify the clipboard on your own and adjusts the functions accordingly
 	copyListener: /* true, false (default) */
