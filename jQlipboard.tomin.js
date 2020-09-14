@@ -217,6 +217,6 @@
 	try{
 		return jQuery
 	} catch(e){
-		return console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin.")
+		console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin.")
 	}
 })()));
