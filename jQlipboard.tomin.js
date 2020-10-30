@@ -211,7 +211,7 @@
 			}
 		}
 	})()
-	$.jQlipboard.version = "0.1.7";
+	$.jQlipboard.version = "0.1.6";
 }((function(){
 	try{
 		return jQuery
