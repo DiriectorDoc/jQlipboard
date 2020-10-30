@@ -5,22 +5,20 @@
 
 	if(!$) return;
 
-	$.jQlipboardVersion = "0.1.6";
-
 	let pasteOn,
 		setQlipboard = ($this) => {
 			if(pasteOn){
 				let a = $this instanceof $ ? $this.clone() : null;
-				window.qlipboard.jqobj = a;
-				window.qlipboard.text = "";
+				$.jQlipboard.qlipboard.jqobj = a;
+				$.jQlipboard.qlipboard.text = "";
 
 				navigator.clipboard.readText()
 					.then(text => {
-						window.qlipboard.text = text;
+						$.jQlipboard.qlipboard.text = text;
 					})
 					.catch(warning)
 				if(a){
-					window.qlipboard.text = a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html() || "";
+					$.jQlipboard.qlipboard.text = a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html() || "";
 				}
 			}
 		},
@@ -43,11 +41,15 @@
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
-			this.select()
-			$.copy()
-			setQlipboard(this)
-			if (this.css("user-select") === "none") {
-				$.copy(this.val() || this.html())
+			if(this[0].tagName == "TABLE"){
+				$.copy(this[0].outerHTML)
+			} else {
+				this.select()
+				$.copy()
+				setQlipboard(this)
+				if (this.css("user-select") === "none") {
+					$.copy(this.val() || this.html())
+				}
 			}
 			return this
 		} else {
@@ -73,17 +75,17 @@
 			let tag = this[0].tagName;
 			if("INPUT" == tag || "TEXTAREA" == tag){
 				if(this.is(":focus") || this[0] === document.activeElement){
-					return $.paste() ? this:this.val(window.qlipboard.text)
+					return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
 				}
 				let $focus = focused();
 				this.focus()
-				if(!$.paste){
-					quotePASTEquote(this, window.qlipboard.text)
+				if(!$.paste()){
+					quotePASTEquote(this, $.jQlipboard.qlipboard.text)
 				}
 				$focus.focus()
 				return this
 			} else {
-				return this.append(window.qlipboard.jqobj.clone())
+				return this.append($.jQlipboard.qlipboard.jqobj.clone())
 			}
 		}
 		warnPaste()
@@ -97,16 +99,17 @@
 	};
 
 	$.fn.select = function(elem, name, value, pass) {
-		if ("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName)
+		let t0 = this[0];
+		if ("INPUT" == t0.tagName || "TEXTAREA" == t0.tagName)
 			return $select(elem, name, value, pass);
 		else if (document.selection) {
 			let range = document.body.createTextRange();
-			range.moveToElementText(this[0])
+			range.moveToElementText(t0)
 			range.select().createTextRange()
 		} else if (window.getSelection) {
 			let range = document.createRange(),
 				selec = window.getSelection();
-			range.selectNode(this[0])
+			range.selectNode(t0)
 			$.deselect()
 			selec.addRange(range)
 		} else {
@@ -147,22 +150,17 @@
 				if(err){
 					error(err)
 				}
-				let error = a=>!!error("Cannot copy text to clipboard");
+				let error = a=>!!error("Cannot copy text to clipboard",a);
 				if(navigator.clipboard){
-					info("Trying navigator.clipboard.writeText() instead")
-					let text = "",
-						success = true;
-					if(window.getSelection){
-						text = window.getSelection().toString();
-					} else if(document.selection && document.selection.type != "Control"){
-						text = document.selection.createRange().text;
-					}
-					navigator.clipboard.writeText(text)
-						.then(x=>{
-							setQlipboard()
-						})
+					let success = !info("Trying navigator.clipboard.writeText() instead");
+					navigator.clipboard.writeText(
+						window.getSelection?
+						window.getSelection().toString():document.selection&&"Control"!=document.selection.type?
+						document.selection.createRange().text:""
+					)
+						.then(setQlipboard)
 						.catch(y=>{
-							success = error()
+							success = error(y)
 						})
 					return success;
 				}
@@ -196,9 +194,9 @@
 	($.jQlipboard = function(config){
 		config = config||0;
 		if(pasteOn = config.pasting){
-			window.qlipboard = {}
+			$.jQlipboard.qlipboard = {}
 		} else {
-			delete window.qlipboard
+			delete $.jQlipboard.qlipboard
 		}
 		if(config.permissionPrompt == "immediate" && pasteOn){
 			navigator.clipboard.readText()
@@ -213,6 +211,7 @@
 			}
 		}
 	})()
+	$.jQlipboard.version = "0.1.7";
 }((function(){
 	try{
 		return jQuery

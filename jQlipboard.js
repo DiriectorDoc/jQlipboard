@@ -1,5 +1,5 @@
 /**
- *	jQlipboard v0.1.6
+ *	jQlipboard v0.1.7
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -14,21 +14,20 @@
 
 	if(!$) return;
 
-	$.jQlipboardVersion = "0.1.6";
 	let pasteOn;
 
 	function setQlipboard($this){
 		if(pasteOn){
-			window.qlipboard.jqobj = $this instanceof $ ? $this.clone() : null;
-			window.qlipboard.text = "";
+			$.jQlipboard.qlipboard.jqobj = $this instanceof $ ? $this.clone() : null;
+			$.jQlipboard.qlipboard.text = "";
 
 			navigator.clipboard.readText()
 				.then(text => {
-					window.qlipboard.text = text
+					$.jQlipboard.qlipboard.text = text
 				})
 				.catch(warning)
-			if(window.qlipboard.jqobj){
-				window.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || ""
+			if($.jQlipboard.qlipboard.jqobj){
+				$.jQlipboard.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || ""
 			}
 		}
 	}
@@ -49,11 +48,15 @@
 	*/
 	$.fn.copy = function(){
 		if(this.parent().length){
-			this.select()
-			$.copy()
-			setQlipboard(this)
-			if(this.css("user-select") === "none"){
-				$.copy(this.val() || this.html())
+			if(this[0].tagName == "TABLE"){
+				$.copy(this[0].outerHTML)
+			} else {
+				this.select()
+				$.copy()
+				setQlipboard(this)
+				if(this.css("user-select") === "none"){
+					$.copy(this.val() || this.html())
+				}
 			}
 			return this
 		} else {
@@ -62,7 +65,7 @@
 					position: "absolute",   // Ensures that appending the object does not mess up the existing document
 
 					opacity: 0,
-					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it disables the ability to select it
+					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it supresses selecting
 
 					"-webkit-user-select": "auto",
 					"-khtml-user-select": "auto",
@@ -84,19 +87,19 @@
 			let tag = this[0].tagName;
 			if("INPUT" == tag || "TEXTAREA" == tag){
 				if(this.is(":focus") || this[0] === document.activeElement){
-					return $.paste() ? this:this.val(window.qlipboard.text)
+					return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
 				}
 				let $focus = $(document.activeElement);
 				this.focus()
-				if(!$.paste){
+				if(!$.paste()){
 					let text = this.val(),
 						e = this[0];
-					this.val(text.slice(0, e.selectionStart) + window.qlipboard.text + text.slice(e.selectionEnd))
+					this.val(text.slice(0, e.selectionStart) + $.jQlipboard.qlipboard.text + text.slice(e.selectionEnd))
 				}
 				$focus.focus()
 				return this
 			} else {
-				return this.append(window.qlipboard.jqobj.clone())
+				return this.append($.jQlipboard.qlipboard.jqobj.clone())
 			}
 		}
 		console.warn("Pasting is truned off by default. You need to enable it upon intitalization.")
@@ -201,9 +204,7 @@
 						text = document.selection.createRange().text
 					}
 					navigator.clipboard.writeText(text)
-						.then(function(){
-							setQlipboard()
-						})
+						.then(setQlipboard)
 						.catch(function(){
 							console.error("Cannot copy text to clipboard")
 							success = false
@@ -257,14 +258,13 @@
 		config = {
 			permissionPrompt: config.permissionPrompt || "when needed",
 			copyListener: config.copyListener || config.copyListener === undefined,
-			pasting: config.pasting || false
+			...config
 		}
-		if(config.pasting){
-			pasteOn = true;
-			window.qlipboard = {}
+		pasteOn = config.pasting;
+		if(pasteOn){
+			$.jQlipboard.qlipboard = {}
 		} else {
-			pasteOn = false;
-			delete window.qlipboard
+			delete $.jQlipboard.qlipboard
 		}
 		if(config.permissionPrompt == "immediate" && config.pasting){
 			navigator.clipboard.readText()
@@ -281,6 +281,8 @@
 	};
 
 	$.jQlipboard()
+	
+	$.jQlipboard.version = "0.1.7";
 }((function(){
 	try{
 		return jQuery
