@@ -1,5 +1,5 @@
 # jQlipboard
-jQlipboard is a jQuery extention that makes accessing the clipboard much easier. This plugin also has features that make it usible across most if not all browsers.
+jQlipboard is a jQuery extension that makes accessing the clipboard much easier. This plugin also has features that make it usable across most if not all browsers.
 
 ## Installation
 To install, simply add the following script tag below the tag where `jQuery.js` is called:
@@ -17,10 +17,10 @@ Or, for a minified script:
 ```
 
 ## Copying
-There are a few ways to add text to clipboard. To simply copy a string to the clipboard use `$.copy(str)`:
+There are a few ways to add text to the clipboard. To simply copy a string to the clipboard use `$.copy(str)`:
 
 ```javascript
-$.copy("This string will be coppied")
+$.copy("This string will be copied")
 ```
 
 To copy the text in an `<input>` or `<textarea>`, simply use `$(...).copy()`:
@@ -47,7 +47,7 @@ Using `$(...).copy()` on any other type of element will instead copy the inside 
 ## Pasting
 Using `$.paste()` is identical to pasting using regular means, such as <kbd>Ctrl</kbd> + <kbd>V</kbd>.
 
-> **Note:** By default, pasting is not enabled. Having it off by default saves RAM and avjoids unnecessary permission prompts. To enable it, use `{pasting: true}` in your [initialization](#initilization) config.
+> **Note:** By default, pasting is not enabled. Having it off by default saves RAM and avoids unnecessary permission prompts. To enable it, use `{pasting: true}` in your [initialization](#initilization) config.
 
 ```javascript
 /* May throw an error if used while the document is not focused */
@@ -93,15 +93,15 @@ Using `$(...).select()` will highlight the target element. This will work on alm
 Calling the function `$.deselect()` will nullify any selection there may be on the page.
 
 ## Initilization
-Initialization is not manditory. If jQlipboard is not initilized, it will simply use the default config. Only initialize if you plan on using the paste feature somewhere on your page.
+Initialization is not mandatory. If jQlipboard is not initialized, it will simply use the default config. Only initialize if you plan on using the paste feature somewhere on your page.
 
 ```javascript
 $.jQlipboard({
 	/*
 	 * Enables the paste command. Off by default to save ram
 	 * and avoid unnecessary permission prompts.
-	 * All other config options are relient on this one. If
-	 * this is set to false or not at all, any7 other config
+	 * All other config options are reliant on this one. If
+	 * this is set to false or not at all, any other config
 	 * option will be ignored.
 	 */
 	pasting: /* true, false (default) */,
