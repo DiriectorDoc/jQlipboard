@@ -18,7 +18,7 @@
 					})
 					.catch(warning)
 				if(a){
-					$.jQlipboard.qlipboard.text = a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html() || "";
+					$.jQlipboard.qlipboard.text = a[0] && isTag(a, "IMG") ? "image" : a.val() || a.html() || "";
 				}
 			}
 		},
@@ -49,11 +49,12 @@
 				range.selectNode(nodeB)
 			}
 			w.addRange(range)
-		};
+		},
+		isTag=function(elem){return [...arguments].some(a=>a==elem[0].tagName)};
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
-			if(this[0].tagName == "TABLE"){
+			if(isTag(this, "TABLE")){
 				$.copy(this[0].outerHTML)
 			} else {
 				let nodeB = w.baseNode,
@@ -89,8 +90,7 @@
 
 	$.fn.paste = function(){
 		if(pasteOn){
-			let tag = this[0].tagName;
-			if("INPUT" == tag || "TEXTAREA" == tag){
+			if(isTag(this, "INPUT", "TEXTAREA")){
 				if(this.is(":focus") || this[0] === document.activeElement){
 					return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
 				}
@@ -119,10 +119,9 @@
 	};
 
 	$.fn.select = function(elem, name, value, pass) {
-		let t0 = this[0];
-		if ("INPUT" == t0.tagName || "TEXTAREA" == t0.tagName)
+		if (isTag(this, "INPUT", "TEXTAREA"))
 			return $select(elem, name, value, pass);
-		else select(t0);
+		else select(this[0]);
 		return this
 	};
 
