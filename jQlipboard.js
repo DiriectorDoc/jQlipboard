@@ -210,7 +210,7 @@
 							console.error("Cannot copy text to clipboard")
 							success = false
 						})
-					return success;
+					return success
 				}
 				console.error("Cannot copy text to clipboard")
 				return false
@@ -249,7 +249,7 @@
 			}
 		}
 		console.warn("Pasting is truned off by default. You need to enable it upon intitalization.")
-		return false;
+		return false
 	};
 
 	$.jQlipboard = function(config){
