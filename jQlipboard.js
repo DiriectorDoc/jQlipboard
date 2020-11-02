@@ -45,7 +45,7 @@
 	}
 	
 	function select(nodeB, offB, nodeE, offE){
-		let range = document.createRange();
+		let range = new Range();
 		$.deselect()
 		if(offB){
 			range.setStart(nodeB, offB)

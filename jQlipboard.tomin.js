@@ -40,7 +40,7 @@
 		warnPaste = a=>warn("Pasting is truned off by default. You need to enable it upon intitalization."),
 		w=window.getSelection(),
 		select=(nodeB, offB, nodeE, offE)=>{
-			let range = document.createRange();
+			let range = new Range();
 			$.deselect()
 			if(offB){
 				range.setStart(nodeB, offB)
