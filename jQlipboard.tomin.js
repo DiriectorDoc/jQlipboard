@@ -18,7 +18,7 @@
 					})
 					.catch(warning)
 				if(a){
-					$.jQlipboard.qlipboard.text = a[0] && "IMG" == a[0].tagName ? "image" : a.val() || a.html() || "";
+					$.jQlipboard.qlipboard.text = a[0] && isTag(a, "IMG") ? "image" : a.val() || a.html() || "";
 				}
 			}
 		},
@@ -37,15 +37,33 @@
 		warn = c.warn,
 		error = c.error,
 		info = c.info,
-		warnPaste = a=>warn("Pasting is truned off by default. You need to enable it upon intitalization.");
+		warnPaste = a=>warn("Pasting is truned off by default. You need to enable it upon intitalization."),
+		w=window.getSelection(),
+		select=(nodeB, offB, nodeE, offE)=>{
+			let range = new Range();
+			$.deselect()
+			if(offB){
+				range.setStart(nodeB, offB)
+				range.setEnd(nodeE, offE)
+			} else {
+				range.selectNode(nodeB)
+			}
+			w.addRange(range)
+		},
+		isTag=function(elem){return [...arguments].some(a=>a==elem[0].tagName)};
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
-			if(this[0].tagName == "TABLE"){
+			if(isTag(this, "TABLE")){
 				$.copy(this[0].outerHTML)
 			} else {
+				let nodeB = w.baseNode,
+					offB = w.baseOffset,
+					nodeE = w.extentNode,
+					offE = w.extentOffset;
 				this.select()
 				$.copy()
+				select(nodeB, offB, nodeE, offE)
 				setQlipboard(this)
 				if (this.css("user-select") === "none") {
 					$.copy(this.val() || this.html())
@@ -72,17 +90,19 @@
 
 	$.fn.paste = function(){
 		if(pasteOn){
-			let tag = this[0].tagName;
-			if("INPUT" == tag || "TEXTAREA" == tag){
+			if(isTag(this, "INPUT", "TEXTAREA")){
 				if(this.is(":focus") || this[0] === document.activeElement){
 					return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
 				}
-				let $focus = focused();
+				let nodeB = w.baseNode,
+					offB = w.baseOffset,
+					nodeE = w.extentNode,
+					offE = w.extentOffset;
 				this.focus()
 				if(!$.paste()){
 					quotePASTEquote(this, $.jQlipboard.qlipboard.text)
 				}
-				$focus.focus()
+				select(nodeB, offB, nodeE, offE)
 				return this
 			} else {
 				return this.append($.jQlipboard.qlipboard.jqobj.clone())
@@ -99,31 +119,14 @@
 	};
 
 	$.fn.select = function(elem, name, value, pass) {
-		let t0 = this[0];
-		if ("INPUT" == t0.tagName || "TEXTAREA" == t0.tagName)
+		if (isTag(this, "INPUT", "TEXTAREA"))
 			return $select(elem, name, value, pass);
-		else if (document.selection) {
-			let range = document.body.createTextRange();
-			range.moveToElementText(t0)
-			range.select().createTextRange()
-		} else if (window.getSelection) {
-			let range = document.createRange(),
-				selec = window.getSelection();
-			range.selectNode(t0)
-			$.deselect()
-			selec.addRange(range)
-		} else {
-			warn("Could not select element")
-		}
-		return this;
+		else select(this[0]);
+		return this
 	};
 
 	$.deselect = function(){
-		if(document.selection){
-			document.selection.empty()
-		} else if(window.getSelection){
-			window.getSelection().removeAllRanges()
-		}
+		w.removeAllRanges()
 	};
 
 	$.cut = function(){
@@ -153,11 +156,7 @@
 				let error = a=>!!error("Cannot copy text to clipboard",a);
 				if(navigator.clipboard){
 					let success = !info("Trying navigator.clipboard.writeText() instead");
-					navigator.clipboard.writeText(
-						window.getSelection?
-						window.getSelection().toString():document.selection&&"Control"!=document.selection.type?
-						document.selection.createRange().text:""
-					)
+					navigator.clipboard.writeText(w.toString())
 						.then(setQlipboard)
 						.catch(y=>{
 							success = error(y)
@@ -211,7 +210,7 @@
 			}
 		}
 	})()
-	$.jQlipboard.version = "0.1.6";
+	$.jQlipboard.version = "0.1.7";
 }((function(){
 	try{
 		return jQuery
