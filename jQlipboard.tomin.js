@@ -117,16 +117,16 @@
 		let t0 = this[0];
 		if ("INPUT" == t0.tagName || "TEXTAREA" == t0.tagName)
 			return $select(elem, name, value, pass);
-		else if (document.selection) {
-			let range = document.body.createTextRange();
-			range.moveToElementText(t0)
-			range.select().createTextRange()
-		} else if (w) {
+		else if (w) {
 			let range = document.createRange(),
 				selec = w();
 			range.selectNode(t0)
 			$.deselect()
 			selec.addRange(range)
+		} else if (document.selection) {
+			let range = document.body.createTextRange();
+			range.moveToElementText(t0)
+			range.select().createTextRange()
 		} else {
 			warn("Could not select element")
 		}
@@ -134,11 +134,11 @@
 	};
 
 	$.deselect = function(){
-		if(document.selection){
-			document.selection.empty()
-		} else if(w){
+		if(w){
 			w().removeAllRanges()
-		}
+		} else if(document.selection){
+			document.selection.empty()
+		} 
 	};
 
 	$.cut = function(){

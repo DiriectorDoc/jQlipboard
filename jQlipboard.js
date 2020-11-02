@@ -137,16 +137,16 @@
 	$.fn.select = function(elem, name, value, pass){
 		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
 			return $select(elem, name, value, pass)
-		} else if(document.selection){
-			let range = document.body.createTextRange();
-			range.moveToElementText(this[0])
-			range.select().createTextRange()
 		} else if(window.getSelection){
 			let range = document.createRange(),
 				selec = window.getSelection();
 			range.selectNode(this[0])
 			$.deselect()
 			selec.addRange(range)
+		} else if(document.selection){
+			let range = document.body.createTextRange();
+			range.moveToElementText(this[0])
+			range.select().createTextRange()
 		} else {
 			console.warn("Could not select element")
 		}
@@ -157,10 +157,9 @@
 	* @returns {undefined}
 	*/
 	$.deselect = function(){
-		if(document.selection){
-			document.selection.empty()
-		} else if(window.getSelection){
+		if(window.getSelection){
 			window.getSelection().removeAllRanges()
+		} else if(document.selection){
 			document.selection.empty()
 		}
 	};
