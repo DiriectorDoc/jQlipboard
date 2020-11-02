@@ -37,15 +37,30 @@
 		warn = c.warn,
 		error = c.error,
 		info = c.info,
-		warnPaste = a=>warn("Pasting is truned off by default. You need to enable it upon intitalization.");
+		warnPaste = a=>warn("Pasting is truned off by default. You need to enable it upon intitalization."),
+		w=window.getSelection;
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
 			if(this[0].tagName == "TABLE"){
 				$.copy(this[0].outerHTML)
 			} else {
-				this.select()
-				$.copy()
+				let c = a=>(this.select(),$.copy());
+				if(w){
+					let range = document.createRange(),
+						selec = w(),
+						nodeB = selec.baseNode,
+						base = selec.baseOffset,
+						nodeE = selec.extentNode,
+						extent = selec.extentOffset;
+					c()
+					$.deselect()
+					range.setStart(nodeB, base)
+					range.setEnd(nodeE, extent)
+					selec.addRange(range)
+				} else {
+					c()
+				}
 				setQlipboard(this)
 				if (this.css("user-select") === "none") {
 					$.copy(this.val() || this.html())
@@ -106,9 +121,9 @@
 			let range = document.body.createTextRange();
 			range.moveToElementText(t0)
 			range.select().createTextRange()
-		} else if (window.getSelection) {
+		} else if (w) {
 			let range = document.createRange(),
-				selec = window.getSelection();
+				selec = w();
 			range.selectNode(t0)
 			$.deselect()
 			selec.addRange(range)
@@ -121,8 +136,8 @@
 	$.deselect = function(){
 		if(document.selection){
 			document.selection.empty()
-		} else if(window.getSelection){
-			window.getSelection().removeAllRanges()
+		} else if(w){
+			w().removeAllRanges()
 		}
 	};
 
@@ -154,8 +169,8 @@
 				if(navigator.clipboard){
 					let success = !info("Trying navigator.clipboard.writeText() instead");
 					navigator.clipboard.writeText(
-						window.getSelection?
-						window.getSelection().toString():document.selection&&"Control"!=document.selection.type?
+						w?
+						w().toString():document.selection&&"Control"!=document.selection.type?
 						document.selection.createRange().text:""
 					)
 						.then(setQlipboard)
@@ -211,7 +226,7 @@
 			}
 		}
 	})()
-	$.jQlipboard.version = "0.1.6";
+	$.jQlipboard.version = "0.1.7";
 }((function(){
 	try{
 		return jQuery

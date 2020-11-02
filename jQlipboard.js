@@ -1,5 +1,5 @@
 /**
- *	jQlipboard v0.1.6
+ *	jQlipboard v0.1.7
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -51,8 +51,23 @@
 			if(this[0].tagName == "TABLE"){
 				$.copy(this[0].outerHTML)
 			} else {
-				this.select()
-				$.copy()
+				if(window.getSelection){
+					let range = document.createRange(),
+						selec = window.getSelection(),
+						nodeB = selec.baseNode,
+						base = selec.baseOffset,
+						nodeE = selec.extentNode,
+						extent = selec.extentOffset;
+					this.select()
+					$.copy()
+					$.deselect()
+					range.setStart(nodeB, base)
+					range.setEnd(nodeE, extent)
+					selec.addRange(range)
+				} else {
+					this.select()
+					$.copy()
+				}
 				setQlipboard(this)
 				if(this.css("user-select") === "none"){
 					$.copy(this.val() || this.html())
@@ -146,6 +161,7 @@
 			document.selection.empty()
 		} else if(window.getSelection){
 			window.getSelection().removeAllRanges()
+			document.selection.empty()
 		}
 	};
 
@@ -282,7 +298,7 @@
 
 	$.jQlipboard()
 	
-	$.jQlipboard.version = "0.1.6";
+	$.jQlipboard.version = "0.1.7";
 }((function(){
 	try{
 		return jQuery
