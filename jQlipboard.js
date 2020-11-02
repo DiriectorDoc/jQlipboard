@@ -14,7 +14,8 @@
 
 	if(!$) return;
 
-	let pasteOn;
+	let pasteOn,
+		selec = window.getSelection();
 
 	function setQlipboard($this){
 		if(pasteOn){
@@ -42,6 +43,18 @@
 	function nothing(){
 		return
 	}
+	
+	function select(nodeB, offB, nodeE, offE){
+		let range = document.createRange();
+		$.deselect()
+		if(offB){
+			range.setStart(nodeB, offB)
+			range.setEnd(nodeE, offE)
+		} else {
+			range.selectNode(nodeB)
+		}
+		selec.addRange(range)
+	}
 
 	/*
 	* @returns {jQuery} this
@@ -51,23 +64,13 @@
 			if(this[0].tagName == "TABLE"){
 				$.copy(this[0].outerHTML)
 			} else {
-				if(window.getSelection){
-					let range = document.createRange(),
-						selec = window.getSelection(),
-						nodeB = selec.baseNode,
-						base = selec.baseOffset,
-						nodeE = selec.extentNode,
-						extent = selec.extentOffset;
-					this.select()
-					$.copy()
-					$.deselect()
-					range.setStart(nodeB, base)
-					range.setEnd(nodeE, extent)
-					selec.addRange(range)
-				} else {
-					this.select()
-					$.copy()
-				}
+				let nodeB = selec.baseNode,
+					offB = selec.baseOffset,
+					nodeE = selec.extentNode,
+					offE = selec.extentOffset;
+				this.select()
+				$.copy()
+				select(nodeB, offB, nodeE, offE)
 				setQlipboard(this)
 				if(this.css("user-select") === "none"){
 					$.copy(this.val() || this.html())
@@ -104,14 +107,17 @@
 				if(this.is(":focus") || this[0] === document.activeElement){
 					return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
 				}
-				let $focus = $(document.activeElement);
+				let nodeB = selec.baseNode,
+					offB = selec.baseOffset,
+					nodeE = selec.extentNode,
+					offE = selec.extentOffset;
 				this.focus()
 				if(!$.paste()){
 					let text = this.val(),
 						e = this[0];
 					this.val(text.slice(0, e.selectionStart) + $.jQlipboard.qlipboard.text + text.slice(e.selectionEnd))
 				}
-				$focus.focus()
+				select(nodeB, offB, nodeE, offE)
 				return this
 			} else {
 				return this.append($.jQlipboard.qlipboard.jqobj.clone())
@@ -137,18 +143,8 @@
 	$.fn.select = function(elem, name, value, pass){
 		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
 			return $select(elem, name, value, pass)
-		} else if(window.getSelection){
-			let range = document.createRange(),
-				selec = window.getSelection();
-			range.selectNode(this[0])
-			$.deselect()
-			selec.addRange(range)
-		} else if(document.selection){
-			let range = document.body.createTextRange();
-			range.moveToElementText(this[0])
-			range.select().createTextRange()
 		} else {
-			console.warn("Could not select element")
+			select(this[0])
 		}
 		return this
 	};
@@ -157,11 +153,7 @@
 	* @returns {undefined}
 	*/
 	$.deselect = function(){
-		if(window.getSelection){
-			window.getSelection().removeAllRanges()
-		} else if(document.selection){
-			document.selection.empty()
-		}
+		selec.removeAllRanges()
 	};
 
 	/*
@@ -211,14 +203,8 @@
 				}
 				if(navigator.clipboard){
 					console.info("Trying navigator.clipboard.writeText() instead")
-					let text = "",
-						success = true;
-					if(window.getSelection){
-						text = window.getSelection().toString()
-					} else if(document.selection && document.selection.type != "Control"){
-						text = document.selection.createRange().text
-					}
-					navigator.clipboard.writeText(text)
+					let success = true;
+					navigator.clipboard.writeText(selec.toString())
 						.then(setQlipboard)
 						.catch(function(){
 							console.error("Cannot copy text to clipboard")
