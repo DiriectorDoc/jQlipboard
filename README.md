@@ -1,19 +1,19 @@
-# jQlipboard
-jQlipboard is a jQuery extension that makes accessing the clipboard much easier. This plugin also has features that make it usable across most if not all browsers.
+# jQlipboard NoPaste
+This version of jQlipboard works exactly the same as the regular version, just without the pesky pasting attribute. Pasting with full support was hard to implement and I still don't think it's perfect. Istead of removing it altogether, I decided to offere the same file but without pasting. This files actually removes a bunch of elements that pertain to pasting only, so the file size a lot smaller in turn.
 
 ## Installation
 To install, simply add the following script tag below the tag where `jQuery.js` is called:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/master/JQlipboard.js"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/master/NoPaste/JQlipboard.js"></script>
 ```
 
 Or, for a minified script:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/master/JQlipboard.min.js"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/master/NoPaste/JQlipboard.min.js"></script>
 ```
 
 ## Copying
@@ -44,39 +44,6 @@ Using `$(...).copy()` on any other type of element will instead copy the inside 
 </body>
 ```
 
-## Pasting
-Using `$.paste()` is identical to pasting using regular means, such as <kbd>Ctrl</kbd> + <kbd>V</kbd>.
-
-> **Note:** By default, pasting is not enabled. Having it off by default saves RAM and avoids unnecessary permission prompts. To enable it, use `{pasting: true}` in your [initialization](#initilization) config.
-
-```javascript
-/* May throw an error if used while the document is not focused */
-$.paste()
-```
-
-To paste text into a textarea of some sort, use `$(...).paste()`:
-
-```javascript
-let element = $('<input type="text" />').appendTo("body")
-
-/* This will put whatever text is in your clipboard into the textarea */
-element.paste()
-```
-
-Using `$(...).paste()` on any other type of element will instead paste the text as innerHTML.
-
-```html
-<body>
-	<div id="copy-text">This text will be replaced</div>
-
-	<script>
-		$.copy("This text will replae the existing text")
-
-		$("#copy-text").paste()
-	</script>
-</body>
-```
-
 ## Selecting
 Using `$(...).select()` will highlight the target element. This will work on almost any element. This function extends the use of the existing jQuery function [`.select()`](https://api.jquery.com/select/), which will trigger instead if used on an `<input>` or `<textarea>` element.
 
@@ -91,25 +58,3 @@ Using `$(...).select()` will highlight the target element. This will work on alm
 ```
 
 Calling the function `$.deselect()` will nullify any selection there may be on the page.
-
-## Initilization
-Initialization is not mandatory. If jQlipboard is not initialized, it will simply use the default config. Only initialize if you plan on using the paste feature somewhere on your page.
-
-```javascript
-$.jQlipboard({
-	/*
-	 * Enables the paste command. Off by default to save ram
-	 * and avoid unnecessary permission prompts.
-	 * All other config options are reliant on this one. If
-	 * this is set to false or not at all, any other config
-	 * option will be ignored.
-	 */
-	pasting: /* true, false (default) */,
-			  
-	// Determines when the page will request permession to use the clipboard; on load or when needed
-	permissionPrompt: /* "immediate", "when needed" (default) */,
-
-	// Detects when you modify the clipboard on your own and adjusts the functions accordingly
-	copyListener: /* true, false (default) */
-})
-```
