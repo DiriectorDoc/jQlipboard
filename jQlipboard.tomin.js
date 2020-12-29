@@ -9,10 +9,8 @@
 		focused=a=>$(document.activeElement),
 		$select = $.fn.select,
 		c=console,
-		warn = c.warn,
 		error = c.error,
 		info = c.info,
-		warnPaste = a=>warn("Pasting is truned off by default. You need to enable it upon intitalization."),
 		w=window.getSelection(),
 		select=(nodeB, offB, nodeE, offE)=>{
 			let range = new Range();
@@ -87,7 +85,7 @@
 				error(err)
 				info("Trying $.copy() instead")
 			}
-			return $.copy() && (($this, a) => $this.val($this.val().slice(0, $this[0].selectionStart) + a +$this.val().slice($this[0].selectionEnd)))(focused(), "")
+			return $.copy() && ($this => $this.val($this.val().slice(0, $this[0].selectionStart) + "" + $this.val().slice($this[0].selectionEnd)))(focused())
 		}
 	};
 
