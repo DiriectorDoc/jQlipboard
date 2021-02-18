@@ -1,5 +1,5 @@
 /**
- *	jQlipboard (NoPaste) v0.1.7
+ *	jQlipboard v0.1.8
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -163,7 +163,7 @@
 		}
 	};
 	
-	$.jQlipboard.version = "0.1.7";
+	$.jQlipboard.version = "0.1.8";
 }((function(){
 	try{
 		return jQuery
