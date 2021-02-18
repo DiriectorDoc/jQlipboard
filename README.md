@@ -1,6 +1,8 @@
 # jQlipboard
 jQlipboard is a jQuery extension that makes accessing the clipboard much easier. This plugin also has features that make it usable across most if not all browsers.
 
+The withPaste variant of jQlipboard attemps to add a pasting attribute. This version is still experimental and may not work as expected 100% of the time.
+
 ## Installation
 To install, simply add the following script tag below the tag where `jQuery.js` is called:
 
