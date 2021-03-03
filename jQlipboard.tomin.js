@@ -4,9 +4,6 @@
 (function($) {
 
 	if(!$) return;
-	
-	console.log("%cjQlipboard no longer supports pasting by default.", "font-size: 2em");
-	console.log("To continusing the paste functions, see https://github.com/DiriectorDoc/jQlipboard/tree/withPaste")
 
 	let exec=a=>document.execCommand(a)||(b=>{throw 0})(),
 		focused=a=>$(document.activeElement),
@@ -119,5 +116,5 @@
 		}
 	};
 
-	$.jQlipboard.version = "0.1.8";
+	$.jQlipboard.version = "0.1.9";
 })(typeof jQuery != "undefined" ? jQuery:console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));

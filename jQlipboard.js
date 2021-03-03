@@ -1,5 +1,5 @@
 /**
- *	jQlipboard v0.1.8
+ *	jQlipboard v0.1.9
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -8,14 +8,11 @@
  *	repository:    https://github.com/DiriectorDoc/jQlipboard
  *
  *
- *	Copyright (c) 2020 Diriector_Doc (DiriectorDoc on github)
+ *	Copyright (c) 2020–2021 Diriector_Doc (DiriectorDoc on github)
  **/
 (function($) {
 
 	if(!$) return;
-	
-	console.log("%cjQlipboard no longer supports pasting by default.", "font-size: 2em");
-	console.log("To continusing the paste functions, see https://github.com/DiriectorDoc/jQlipboard/tree/withPaste")
 
 	let selec = window.getSelection();
 
@@ -166,7 +163,7 @@
 		}
 	};
 	
-	$.jQlipboard.version = "0.1.8";
+	$.jQlipboard.version = "0.1.9";
 }((function(){
 	try{
 		return jQuery
