@@ -1,5 +1,5 @@
 /**
- *	jQlipboard v0.1.8
+ *	jQlipboard v0.1.9 (withPaste)
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -8,7 +8,7 @@
  *	repository:    https://github.com/DiriectorDoc/jQlipboard
  *
  *
- *	Copyright (c) 2020 Diriector_Doc (DiriectorDoc on github)
+ *	Copyright (c) 2020–2021 Diriector_Doc (DiriectorDoc on github)
  **/
 (function($) {
 
@@ -283,7 +283,7 @@
 
 	$.jQlipboard()
 	
-	$.jQlipboard.version = "0.1.8";
+	$.jQlipboard.version = "0.1.9";
 }((function(){
 	try{
 		return jQuery

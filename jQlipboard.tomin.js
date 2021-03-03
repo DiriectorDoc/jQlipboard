@@ -210,5 +210,5 @@
 			}
 		}
 	})()
-	$.jQlipboard.version = "0.1.8";
+	$.jQlipboard.version = "0.1.9";
 })(typeof jQuery != "undefined" ? jQuery:console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
