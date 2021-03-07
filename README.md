@@ -1,3 +1,5 @@
+![jQlipboard](https://user-images.githubusercontent.com/66105586/110230030-c00dce80-7edb-11eb-9d03-2d796745e606.png)
+
 # jQlipboard
 jQlipboard is a jQuery extension that makes accessing the clipboard much easier. This plugin also has features that make it usable across most if not all browsers.
 
