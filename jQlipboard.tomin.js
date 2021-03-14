@@ -47,11 +47,11 @@
 					position: "absolute", // Ensures that appending the object does not mess up the existing document
 					opacity: 0, // ↴
 					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it disables the avility to select it
-					"-webkit-user-select": "auto",
-					"-khtml-user-select": "auto",
-					"-moz-user-select": "auto", // Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
-					"-ms-user-select": "auto",
-					"user-select": "auto"
+					"-webkit-user-select": "text",
+					"-khtml-user-select": "text",
+					"-moz-user-select": "text", // Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
+					"-ms-user-select": "text",
+					"user-select": "text"
 				})
 				.appendTo("body")
 				.copy()
