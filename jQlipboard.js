@@ -146,9 +146,7 @@
 	/*
 	* @returns {undefined}
 	*/
-	$.deselect = function(){
-		selec.removeAllRanges()
-	};
+	$.deselect = () => selec.removeAllRanges();
 
 	/*
 	* @returns {boolean}
