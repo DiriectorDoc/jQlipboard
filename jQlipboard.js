@@ -1,5 +1,5 @@
 /**
- *	jQlipboard v0.1.9 (withPaste)
+ *	jQlipboard w0.2 (withPaste)
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
@@ -139,13 +139,14 @@
 	/*
 	* @returns {jQuery} this
 	*/
-	const $select = $.fn.select;
-	$.fn.select = function(elem, name, value, pass){
-		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
-			return $select(elem, name, value, pass)
-		} else {
-			select(this[0])
+	$.fn.select = function (data, fn) {
+		if(arguments.length > 0){
+			return this.on("select", null, data, fn)
 		}
+		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
+			return this.trigger("select")
+		}
+		select(this[0])
 		return this
 	};
 
@@ -283,7 +284,7 @@
 
 	$.jQlipboard()
 	
-	$.jQlipboard.version = "0.1.9";
+	$.jQlipboard.version = "w0.2";
 }((function(){
 	try{
 		return jQuery

@@ -32,7 +32,6 @@
 		nothing=a=>0,
 		exec=a=>document.execCommand(a)||(b=>{throw 0})(),
 		focused=a=>$(document.activeElement),
-		$select = $.fn.select,
 		c=console,
 		warn = c.warn,
 		error = c.error,
@@ -118,10 +117,12 @@
 			.remove()
 	};
 
-	$.fn.select = function(elem, name, value, pass) {
-		if (isTag(this, "INPUT", "TEXTAREA"))
-			return $select(elem, name, value, pass);
-		else select(this[0]);
+	$.fn.select = function(data, fn) {
+		if(arguments.length > 0)
+			return this.on("select", null, data, fn);
+		if(isTag(this, "INPUT", "TEXTAREA"))
+			return this.trigger("select");
+		select(this[0]);
 		return this
 	};
 
@@ -210,5 +211,5 @@
 			}
 		}
 	})()
-	$.jQlipboard.version = "0.1.9";
-})(typeof jQuery != "undefined" ? jQuery:console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
+	$.jQlipboard.version = "w0.2";
+})(window.jQuery || console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
