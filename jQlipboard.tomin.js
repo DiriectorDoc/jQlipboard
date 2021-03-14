@@ -74,9 +74,7 @@
 		return this
 	};
 
-	$.deselect = function(){
-		w.removeAllRanges()
-	};
+	$.deselect = a => w.removeAllRanges();
 
 	$.cut = function(){
 		try {
