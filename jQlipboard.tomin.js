@@ -7,7 +7,6 @@
 
 	let exec=a=>document.execCommand(a)||(b=>{throw 0})(),
 		focused=a=>$(document.activeElement),
-		$select = $.fn.select,
 		c=console,
 		error = c.error,
 		info = c.info,
@@ -66,10 +65,12 @@
 			.remove()
 	};
 
-	$.fn.select = function(elem, name, value, pass) {
-		if (isTag(this, "INPUT", "TEXTAREA"))
-			return $select(elem, name, value, pass);
-		else select(this[0]);
+	$.fn.select = function(data, fn) {
+		if(arguments.length > 0)
+			return this.on("select", null, data, fn);
+		if(isTag(this, "INPUT", "TEXTAREA"))
+			return this.trigger("select");
+		select(this[0]);
 		return this
 	};
 
@@ -104,7 +105,7 @@
 				let error = a=>!!error("Cannot copy text to clipboard",a);
 				if(navigator.clipboard){
 					let success = !info("Trying navigator.clipboard.writeText() instead");
-					navigator.clipboard.writeText(w.toString())
+					navigator.clipboard.writeText(w+"")
 						.then(a=>0)
 						.catch(y=>{
 							success = error(y)
@@ -116,5 +117,5 @@
 		}
 	};
 
-	$.jQlipboard.version = "0.1.9";
-})(typeof jQuery != "undefined" ? jQuery:console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
+	$.jQlipboard.version = "v0.2";
+})(window.jQuery || console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
