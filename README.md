@@ -1,23 +1,23 @@
 ![jQlipboard](https://user-images.githubusercontent.com/66105586/110230030-c00dce80-7edb-11eb-9d03-2d796745e606.png)
 
 # jQlipboard
-jQlipboard is a jQuery extension that makes accessing the clipboard much easier. This plugin also has features that make it usable across most if not all browsers.
+jQlipboard is a jQuery extension that makes accessing the clipboard much easier. This plugin also has features that make it usable across all modern browsers.
 
-The withPaste variant of jQlipboard attemps to add a pasting attribute. This version is still experimental and may not work as expected 100% of the time.
+The withPaste variant of jQlipboard adds pasting functionalities. The full documentation can be found [here](https://diriectordoc.github.io/jQlipboard-Docs).
 
 ## Installation
 To install, simply add the following script tag below the tag where `jQuery.js` is called:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/withPaste/JQlipboard.js"></script>
+<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.1.9/jQlipboard.withPaste.js"></script>
 ```
 
 Or, for a minified script:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/DiriectorDoc/jQlipboard/withPaste/JQlipboard.min.js"></script>
+<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.1.9/jQlipboard.withPaste.min.js"></script>
 ```
 
 ## Copying
