@@ -249,12 +249,12 @@
 			...config
 		}
 		$.jQlipboard.qlipboard = {}
-		if(config.permissionPrompt == "immediate" && config.pasting){
+		if(config.permissionPrompt == "immediate"){
 			navigator.clipboard.readText()
 				.then(nothing)
 				.catch(warning)
 		}
-		if(config.copyListener && config.pasting){
+		if(config.copyListener){
 			if($.fn.on){
 				$(document).on("copy", setQlipboard)
 			} else {
