@@ -103,7 +103,7 @@
 	/*
 	* @returns {boolean}
 	*/
-	$.cut = function(){
+	$.cut = () => {
 		try {
 			if(!document.execCommand("cut")){
 				throw false
@@ -130,7 +130,7 @@
 	* @param {string} text
 	* @returns {boolean}
 	*/
-	$.copy = function(text){
+	$.copy = text => {
 		if(text !== undefined){
 			$("<a>")
 				.html(text)
