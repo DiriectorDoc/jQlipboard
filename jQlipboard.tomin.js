@@ -16,7 +16,7 @@
 				})
 				.catch(warning)
 			if(a){
-				$.jQlipboard.qlipboard.text = a[0] && isTag(a, "IMG") ? "image" : a.val() || a.html() || "";
+				$.jQlipboard.qlipboard.text = a[0] && $(a).is("img") ? "image" : a.val() || a.html() || "";
 			}
 		},
 		quotePASTEquote = ($this, a) => $this.val($this.val().slice(0, $this[0].selectionStart) + a +$this.val().slice($this[0].selectionEnd)),
@@ -44,12 +44,11 @@
 				range.selectNode(nodeB)
 			}
 			w.addRange(range)
-		},
-		isTag=function(elem){return [...arguments].some(a=>a==elem[0].tagName)};
+		};
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
-			if(isTag(this, "TABLE")){
+			if($(this).is("table")){
 				$.copy(this[0].outerHTML)
 			} else {
 				let nodeB = w.baseNode,
@@ -84,7 +83,7 @@
 	};
 
 	$.fn.paste = function(){
-		if(isTag(this, "INPUT", "TEXTAREA")){
+		if($(this).is("input,textarea")){
 			if(this.is(":focus") || this[0] === document.activeElement){
 				return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
 			}
@@ -112,7 +111,7 @@
 	$.fn.select = function(data, fn) {
 		if(arguments.length > 0)
 			return this.on("select", null, data, fn);
-		if(isTag(this, "INPUT", "TEXTAREA"))
+		if($(this).is("input,textarea"))
 			return this.trigger("select");
 		select(this[0]);
 		return this
@@ -120,7 +119,7 @@
 
 	$.deselect = a => w.removeAllRanges();
 
-	$.cut = function(){
+	$.cut = a=>{
 		try {
 			return exec("cut")
 		} catch(err){
@@ -132,7 +131,7 @@
 		}
 	};
 
-	$.copy = function(text){
+	$.copy = text=>{
 		if(text !== undefined){
 			$("<a>")
 				.html(text)
@@ -159,7 +158,7 @@
 		}
 	};
 
-	$.paste = function() {
+	$.paste = a=>{
 		try {
 		   return exec("paste")
 		} catch(e){

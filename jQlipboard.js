@@ -26,7 +26,7 @@
 			})
 			.catch(warning)
 		if($.jQlipboard.qlipboard.jqobj){
-			$.jQlipboard.qlipboard.text = $this[0] && "IMG" == $this[0].tagName ? "image" : $this.val() || $this.html() || ""
+			$.jQlipboard.qlipboard.text = $this[0] && $($this).is("img") ? "image" : $this.val() || $this.html() || ""
 		}
 	}
 
@@ -58,7 +58,7 @@
 	*/
 	$.fn.copy = function(){
 		if(this.parent().length){
-			if(this[0].tagName == "TABLE"){
+			if($(this).is("table")){
 				$.copy(this[0].outerHTML)
 			} else {
 				let nodeB = selec.baseNode,
@@ -98,8 +98,7 @@
 	* @returns {jQuery} this
 	*/
 	$.fn.paste = function(){
-		let tag = this[0].tagName;
-		if("INPUT" == tag || "TEXTAREA" == tag){
+		if($(this).is("input,textarea")){
 			if(this.is(":focus") || this[0] === document.activeElement){
 				return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
 			}
@@ -132,11 +131,11 @@
 	/*
 	* @returns {jQuery} this
 	*/
-	$.fn.select = function (data, fn) {
+	$.fn.select = function(data, fn){
 		if(arguments.length > 0){
 			return this.on("select", null, data, fn)
 		}
-		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
+		if($(this).is("input,textarea")){
 			return this.trigger("select")
 		}
 		select(this[0])
@@ -151,7 +150,7 @@
 	/*
 	* @returns {boolean}
 	*/
-	$.cut = function(){
+	$.cut = () => {
 		try {
 			if(!document.execCommand("cut")){
 				throw false
@@ -178,7 +177,7 @@
 	* @param {string} text
 	* @returns {boolean}
 	*/
-	$.copy = function(text){
+	$.copy = (text) => {
 		if(text !== undefined){
 			$("<a>")
 				.html(text)
@@ -213,7 +212,7 @@
 	/*
 	* @returns {boolean}
 	*/
-	$.paste = function(){
+	$.paste = () => {
 		try {
 			if(!document.execCommand("paste")){
 				throw false
