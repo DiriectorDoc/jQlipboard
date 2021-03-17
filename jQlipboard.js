@@ -37,7 +37,7 @@
 	*/
 	$.fn.copy = function(){
 		if(this.parent().length){
-			if(this[0].tagName == "TABLE"){
+			if($(this).is("table")){
 				$.copy(this[0].outerHTML)
 			} else {
 				let nodeB = selec.baseNode,
@@ -84,11 +84,11 @@
 	/*
 	* @returns {jQuery} this
 	*/
-	$.fn.select = function (data, fn) {
+	$.fn.select = function(data, fn){
 		if(arguments.length > 0){
 			return this.on("select", null, data, fn)
 		}
-		if("INPUT" == this[0].tagName || "TEXTAREA" == this[0].tagName){
+		if($(this).is("input,textarea")){
 			return this.trigger("select")
 		}
 		select(this[0])
@@ -162,7 +162,7 @@
 		}
 	};
 	
-	$.jQlipboard.version = "v0.2";
+	$.jQlipboard = {version: "v0.2"};
 }((function(){
 	try{
 		return jQuery

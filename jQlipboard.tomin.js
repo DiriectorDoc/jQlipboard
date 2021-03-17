@@ -21,12 +21,11 @@
 				range.selectNode(nodeB)
 			}
 			w.addRange(range)
-		},
-		isTag=function(elem){return [...arguments].some(a=>a==elem[0].tagName)};
+		};
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
-			if(isTag(this, "TABLE")){
+			if($(this).is("table")){
 				$.copy(this[0].outerHTML)
 			} else {
 				let nodeB = w.baseNode,
@@ -68,7 +67,7 @@
 	$.fn.select = function(data, fn) {
 		if(arguments.length > 0)
 			return this.on("select", null, data, fn);
-		if(isTag(this, "INPUT", "TEXTAREA"))
+		if($(this).is("input,textarea"))
 			return this.trigger("select");
 		select(this[0]);
 		return this
@@ -76,7 +75,7 @@
 
 	$.deselect = a => w.removeAllRanges();
 
-	$.cut = function(){
+	$.cut = a=>{
 		try {
 			return exec("cut")
 		} catch(err){
@@ -88,7 +87,7 @@
 		}
 	};
 
-	$.copy = function(text){
+	$.copy = text=>{
 		if(text !== undefined){
 			$("<a>")
 				.html(text)
@@ -115,5 +114,5 @@
 		}
 	};
 
-	$.jQlipboard.version = "v0.2";
+	$.jQlipboard = {version: "v0.2"};
 })(window.jQuery || console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
