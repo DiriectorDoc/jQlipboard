@@ -5,8 +5,8 @@
  *
  *	Author:        Diriector_Doc
  *	Licence:       MIT
- *	repository:    https://github.com/DiriectorDoc/jQlipboard
- *
+ *	Repository:    https://github.com/DiriectorDoc/jQlipboard
+ *	Website:       https://diriectordoc.github.io/jQlipboard-Docs/
  *
  *	Copyright (c) 2020–2021 Diriector_Doc (DiriectorDoc on github)
  **/
