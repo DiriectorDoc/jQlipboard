@@ -7,7 +7,6 @@
 
 	let exec=a=>document.execCommand(a)||(b=>{throw 0})(),
 		focused=a=>$(document.activeElement),
-		$select = $.fn.select,
 		c=console,
 		error = c.error,
 		info = c.info,
@@ -22,12 +21,11 @@
 				range.selectNode(nodeB)
 			}
 			w.addRange(range)
-		},
-		isTag=function(elem){return [...arguments].some(a=>a==elem[0].tagName)};
+		};
 
 	$.fn.copy = function() {
 		if (this.parent().length) {
-			if(isTag(this, "TABLE")){
+			if($(this).is("table")){
 				$.copy(this[0].outerHTML)
 			} else {
 				let nodeB = w.baseNode,
@@ -48,11 +46,11 @@
 					position: "absolute", // Ensures that appending the object does not mess up the existing document
 					opacity: 0, // ↴
 					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it disables the avility to select it
-					"-webkit-user-select": "auto",
-					"-khtml-user-select": "auto",
-					"-moz-user-select": "auto", // Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
-					"-ms-user-select": "auto",
-					"user-select": "auto"
+					"-webkit-user-select": "text",
+					"-khtml-user-select": "text",
+					"-moz-user-select": "text", // Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
+					"-ms-user-select": "text",
+					"user-select": "text"
 				})
 				.appendTo("body")
 				.copy()
@@ -66,18 +64,18 @@
 			.remove()
 	};
 
-	$.fn.select = function(elem, name, value, pass) {
-		if (isTag(this, "INPUT", "TEXTAREA"))
-			return $select(elem, name, value, pass);
-		else select(this[0]);
+	$.fn.select = function(data, fn) {
+		if(arguments.length > 0)
+			return this.on("select", null, data, fn);
+		if($(this).is("input,textarea"))
+			return this.trigger("select");
+		select(this[0]);
 		return this
 	};
 
-	$.deselect = function(){
-		w.removeAllRanges()
-	};
+	$.deselect = a => w.removeAllRanges();
 
-	$.cut = function(){
+	$.cut = a=>{
 		try {
 			return exec("cut")
 		} catch(err){
@@ -89,7 +87,7 @@
 		}
 	};
 
-	$.copy = function(text){
+	$.copy = text=>{
 		if(text !== undefined){
 			$("<a>")
 				.html(text)
@@ -104,7 +102,7 @@
 				let error = a=>!!error("Cannot copy text to clipboard",a);
 				if(navigator.clipboard){
 					let success = !info("Trying navigator.clipboard.writeText() instead");
-					navigator.clipboard.writeText(w.toString())
+					navigator.clipboard.writeText(w+"")
 						.then(a=>0)
 						.catch(y=>{
 							success = error(y)
@@ -116,5 +114,5 @@
 		}
 	};
 
-	$.jQlipboard.version = "0.1.9";
-})(typeof jQuery != "undefined" ? jQuery:console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
+	$.jQlipboard = {version: "v0.2"};
+})(window.jQuery || console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
