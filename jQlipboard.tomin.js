@@ -5,9 +5,32 @@
 
 	if(!$) return;
 
-	let exec=a=>document.execCommand(a)||(b=>{throw 0})(),
+	let setQlipboard = ($this) => {
+			let a = $this instanceof $ ? $this.clone() : null;
+			$.jQlipboard.qlipboard.jqobj = a;
+			$.jQlipboard.qlipboard.text = "";
+
+			navigator.clipboard.readText()
+				.then(text => {
+					$.jQlipboard.qlipboard.text = text;
+				})
+				.catch(warning)
+			if(a){
+				$.jQlipboard.qlipboard.text = a[0] && $(a).is("img") ? "image" : a.val() || a.html() || "";
+			}
+		},
+		quotePASTEquote = ($this, a) => $this.val($this.val().slice(0, $this[0].selectionStart) + a +$this.val().slice($this[0].selectionEnd)),
+		warning= err=>{
+			error(err)
+			warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
+			info('To grant permission, go into your browser setting and allow "Clipboard"')
+			warning = nothing
+		},
+		nothing=a=>0,
+		exec=a=>document.execCommand(a)||(b=>{throw 0})(),
 		focused=a=>$(document.activeElement),
 		c=console,
+		warn = c.warn,
 		error = c.error,
 		info = c.info,
 		w=window.getSelection(),
@@ -35,6 +58,7 @@
 				this.select()
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
+				setQlipboard(this)
 				if (this.css("user-select") === "none") {
 					$.copy(this.val() || this.html())
 				}
@@ -55,6 +79,26 @@
 				.appendTo("body")
 				.copy()
 				.remove()
+		}
+	};
+
+	$.fn.paste = function(){
+		if($(this).is("input,textarea")){
+			if(this.is(":focus") || this[0] === document.activeElement){
+				return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
+			}
+			let nodeB = w.baseNode,
+				offB = w.baseOffset,
+				nodeE = w.extentNode,
+				offE = w.extentOffset;
+			this.focus()
+			if(!$.paste()){
+				quotePASTEquote(this, $.jQlipboard.qlipboard.text)
+			}
+			select(nodeB, offB, nodeE, offE)
+			return this
+		} else {
+			return this.append($.jQlipboard.qlipboard.jqobj.clone())
 		}
 	};
 
@@ -83,7 +127,7 @@
 				error(err)
 				info("Trying $.copy() instead")
 			}
-			return $.copy() && ($this => $this.val($this.val().slice(0, $this[0].selectionStart) + "" + $this.val().slice($this[0].selectionEnd)))(focused())
+			return $.copy() && quotePASTEquote(focused(), "")
 		}
 	};
 
@@ -102,8 +146,8 @@
 				let error = a=>!!error("Cannot copy text to clipboard",a);
 				if(navigator.clipboard){
 					let success = !info("Trying navigator.clipboard.writeText() instead");
-					navigator.clipboard.writeText(w+"")
-						.then(a=>0)
+					navigator.clipboard.writeText(w.toString())
+						.then(setQlipboard)
 						.catch(y=>{
 							success = error(y)
 						})
@@ -114,5 +158,40 @@
 		}
 	};
 
-	$.jQlipboard = {version: "v0.2"};
+	$.paste = a=>{
+		try {
+		   return exec("paste")
+		} catch(e){
+			if(e){
+				warn(e)
+			}
+			let success = true;
+			navigator.clipboard.readText()
+				.then(clipText => {
+					quotePASTEquote(focused(), clipText)
+				})
+				.catch(err => {
+					success = !!error("Could not execute paste", err)
+				})
+			return success
+		}
+	};
+
+	($.jQlipboard = function(config){
+		config = config||0;
+		$.jQlipboard.qlipboard = {}
+		if(config.permissionPrompt == "immediate"){
+			navigator.clipboard.readText()
+				.then(nothing)
+				.catch(warning)
+		}
+		if(config.copyListener || config.copyListener === undefined){
+			if($().on){
+				$(document).on("copy", setQlipboard)
+			} else {
+				$(document).bind("copy", setQlipboard)
+			}
+		}
+	})()
+	$.jQlipboard.version = "w0.2";
 })(window.jQuery || console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
