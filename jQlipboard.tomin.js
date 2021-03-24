@@ -9,7 +9,6 @@
 		focused=a=>$(document.activeElement),
 		c=console,
 		error = c.error,
-		info = c.info,
 		w=window.getSelection(),
 		select=(nodeB, offB, nodeE, offE)=>{
 			let range = new Range();
@@ -35,17 +34,18 @@
 				this.select()
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
-				if (this.css("user-select") === "none") {
+				/*
+				if (this.css("user-select") == "none") {
 					$.copy(this.val() || this.html())
-				}
+				}*/
 			}
 			return this
 		} else {
 			return this
 				.css({
+					display: "block",
 					position: "absolute", // Ensures that appending the object does not mess up the existing document
-					opacity: 0, // ↴
-					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it disables the avility to select it
+					left: "-9999in", // Makes the object display out of sight. `display:none` will not work since it supresses selecting
 					"-webkit-user-select": "text",
 					"-khtml-user-select": "text",
 					"-moz-user-select": "text", // Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
@@ -81,38 +81,54 @@
 		} catch(err){
 			if(err){
 				error(err)
-				info("Trying $.copy() instead")
+				c.info("Trying $.copy() instead")
 			}
 			return $.copy() && ($this => $this.val($this.val().slice(0, $this[0].selectionStart) + "" + $this.val().slice($this[0].selectionEnd)))(focused())
 		}
 	};
 
-	$.copy = text=>{
-		if(text !== undefined){
-			$("<a>")
-				.html(text)
-				.copy()
-		} else {
-			try {
-				return exec("copy")
-			} catch(err){
-				if(err){
-					error(err)
+	$.copy = info=>{
+		switch(typeof info){
+			case "object":
+				if(info == null){
+					$("<img>").copy()
+					return
 				}
-				let error = a=>!!error("Cannot copy text to clipboard",a);
-				if(navigator.clipboard){
-					let success = !info("Trying navigator.clipboard.writeText() instead");
-					navigator.clipboard.writeText(w+"")
-						.then(a=>0)
-						.catch(y=>{
-							success = error(y)
-						})
-					return success;
+				info = info instanceof Date ? info.toISOString() : (info instanceof HTMLElement ? info.outerHTML : (info.toString() != "[object Object]" ? info.toString() : JSON.stringify(info)))
+			case "number":
+			case "string":
+				$('<script type="text/plain">')
+					.html(info)
+					.copy()
+				break;
+			case "undefined":
+				try {
+					return exec("copy")
+				} catch(err){
+					if(err){
+						error(err)
+					}
+					let error = a=>!!error("Cannot copy text to clipboard");
+					if(navigator.clipboard){
+						let success = !info("Trying navigator.clipboard.writeText() instead");
+						navigator.clipboard.writeText(w)
+							.then(a=>0)
+							.catch(y=>{
+								success = error()
+							})
+						return success;
+					}
+					return error()
 				}
-				return error()
-			}
+				break;
+			default:
+				try {
+					return $.copy(info.toString())
+				} catch(err){
+					error("Could not convert item to a copiable string.\n",info,err)
+				}
 		}
 	};
 
-	$.jQlipboard = {version: "v0.2"};
+	$.jQlipboard = {version: "v0.3"};
 })(window.jQuery || console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));

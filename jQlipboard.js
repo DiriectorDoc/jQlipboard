@@ -48,18 +48,19 @@
 				this.select()
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
-				if(this.css("user-select") === "none"){
+				/*
+				if(this.css("user-select") == "none"){
 					$.copy(this.val() || this.html())
-				}
+				}*/
 			}
 			return this
 		} else {
 			return this
 				.css({
+					display: "block",
 					position: "absolute",   // Ensures that appending the object does not mess up the existing document
 
-					opacity: 0,
-					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it supresses selecting
+					left: "-9999in", // Makes the object display out of sight. `display:none` will not work since it supresses selecting
 
 					"-webkit-user-select": "text",
 					"-khtml-user-select": "text",
@@ -128,42 +129,65 @@
 	};
 
 	/*
-	* @param {string} text
-	* @returns {boolean}
+	* @param {*} info - Anything that can be turned into a string
+	* @returns {(boolean|undefined)}
 	*/
-	$.copy = text => {
-		if(text !== undefined){
-			$("<a>")
-				.html(text)
-				.copy()
-		} else {
-			try {
-				if(!document.execCommand("copy")){
-					throw false
+	$.copy = info => {
+		switch(typeof info){
+			case "object":
+				if(info == null){
+					$("<img>").copy()
+					return
 				}
-				return true
-			} catch(err){
-				if(err){
-					console.error(err)
+				if(info instanceof Date)
+					info = info.toISOString();
+				else if(info instanceof HTMLElement)
+					info = info.outerHTML;
+				else if(info.toString() != "[object Object]")
+					info = info.toString();
+				else
+					info = JSON.stringify(info);
+			case "number":
+			case "string":
+				$('<script type="text/plain">')
+					.html(info)
+					.copy()
+				break;
+			case "undefined":
+				try {
+					if(!document.execCommand("copy")){
+						throw false
+					}
+					return true
+				} catch(err){
+					if(err){
+						console.error(err)
+					}
+					if(navigator.clipboard){
+						console.info("Trying navigator.clipboard.writeText() instead")
+						let success = true;
+						navigator.clipboard.writeText(selec)
+							.then(nothing)
+							.catch(function(){
+								console.error("Cannot copy text to clipboard")
+								success = false
+							})
+						return success
+					}
+					console.error("Cannot copy text to clipboard")
+					return false
 				}
-				if(navigator.clipboard){
-					console.info("Trying navigator.clipboard.writeText() instead")
-					let success = true;
-					navigator.clipboard.writeText(selec.toString())
-						.then(nothing)
-						.catch(function(){
-							console.error("Cannot copy text to clipboard")
-							success = false
-						})
-					return success
+				break;
+			default:
+				try {
+					return $.copy(info.toString())
+				} catch(err){
+					console.error("Could not convert item to a copiable string.\n",info,err)
 				}
-				console.error("Cannot copy text to clipboard")
-				return false
-			}
 		}
 	};
 	
-	$.jQlipboard = {version: "v0.2"};
+	$.jQlipboard = {version: "v0.3"};
 }((function(){
 	try{
 		return jQuery
