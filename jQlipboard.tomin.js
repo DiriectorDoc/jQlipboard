@@ -9,6 +9,7 @@
 		focused=a=>$(document.activeElement),
 		c=console,
 		error = c.error,
+		info = c.info,
 		w=window.getSelection(),
 		select=(nodeB, offB, nodeE, offE)=>{
 			let range = new Range();
@@ -81,24 +82,24 @@
 		} catch(err){
 			if(err){
 				error(err)
-				c.info("Trying $.copy() instead")
+				info("Trying $.copy() instead")
 			}
 			return $.copy() && ($this => $this.val($this.val().slice(0, $this[0].selectionStart) + "" + $this.val().slice($this[0].selectionEnd)))(focused())
 		}
 	};
 
-	$.copy = info=>{
-		switch(typeof info){
+	$.copy = data=>{
+		switch(typeof data){
 			case "object":
-				if(info == null){
+				if(data == null){
 					$("<img>").copy()
 					return
 				}
-				info = info instanceof Date ? info.toISOString() : (info instanceof HTMLElement ? info.outerHTML : (info.toString() != "[object Object]" ? info.toString() : JSON.stringify(info)))
+				data = data instanceof Date ? data.toISOString() : (data instanceof HTMLElement ? data.outerHTML : (data.toString() != "[object Object]" ? data.toString() : JSON.stringify(data)))
 			case "number":
 			case "string":
 				$('<script type="text/plain">')
-					.html(info)
+					.html(data)
 					.copy()
 				break;
 			case "undefined":
@@ -123,9 +124,9 @@
 				break;
 			default:
 				try {
-					return $.copy(info.toString())
+					return $.copy(data.toString())
 				} catch(err){
-					error("Could not convert item to a copiable string.\n",info,err)
+					error("Could not convert item to a copiable string.\n",data,err)
 				}
 		}
 	};

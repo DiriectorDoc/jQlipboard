@@ -129,28 +129,28 @@
 	};
 
 	/*
-	* @param {*} info - Anything that can be turned into a string
+	* @param {*} data - Anything that can be turned into a string
 	* @returns {(boolean|undefined)}
 	*/
-	$.copy = info => {
-		switch(typeof info){
+	$.copy = data => {
+		switch(typeof data){
 			case "object":
-				if(info == null){
+				if(data == null){
 					$("<img>").copy()
 					return
 				}
-				if(info instanceof Date)
-					info = info.toISOString();
-				else if(info instanceof HTMLElement)
-					info = info.outerHTML;
-				else if(info.toString() != "[object Object]")
-					info = info.toString();
+				if(data instanceof Date)
+					data = data.toISOString();
+				else if(data instanceof HTMLElement)
+					data = data.outerHTML;
+				else if(data.toString() != "[object Object]")
+					data = data.toString();
 				else
-					info = JSON.stringify(info);
+					data = JSON.stringify(data);
 			case "number":
 			case "string":
 				$('<script type="text/plain">')
-					.html(info)
+					.html(data)
 					.copy()
 				break;
 			case "undefined":
@@ -180,9 +180,9 @@
 				break;
 			default:
 				try {
-					return $.copy(info.toString())
+					return $.copy(data.toString())
 				} catch(err){
-					console.error("Could not convert item to a copiable string.\n",info,err)
+					console.error("Could not convert item to a copiable string.\n",data,err)
 				}
 		}
 	};
