@@ -59,17 +59,17 @@
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
 				setQlipboard(this)
-				if (this.css("user-select") === "none") {
+				/*if (this.css("user-select") === "none") {
 					$.copy(this.val() || this.html())
-				}
+				}*/
 			}
 			return this
 		} else {
 			return this
 				.css({
+					display: "block",
 					position: "absolute", // Ensures that appending the object does not mess up the existing document
-					opacity: 0, // ↴
-					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it disables the avility to select it
+					left: "-9999in", // Makes the object display out of sight. `display:none` will not work since it supresses selecting
 					"-webkit-user-select": "text",
 					"-khtml-user-select": "text",
 					"-moz-user-select": "text", // Ensures that the appended object can be selected, just in case it was disabled in the stylesheet
@@ -131,30 +131,46 @@
 		}
 	};
 
-	$.copy = text=>{
-		if(text !== undefined){
-			$("<a>")
-				.html(text)
-				.copy()
-		} else {
-			try {
-				return exec("copy")
-			} catch(err){
-				if(err){
-					error(err)
+	$.copy = data=>{
+		switch(typeof data){
+			case "object":
+				if(data == null){
+					$("<img>").copy()
+					return
 				}
-				let error = a=>!!error("Cannot copy text to clipboard",a);
-				if(navigator.clipboard){
-					let success = !info("Trying navigator.clipboard.writeText() instead");
-					navigator.clipboard.writeText(w.toString())
-						.then(setQlipboard)
-						.catch(y=>{
-							success = error(y)
-						})
-					return success;
+				data = data instanceof Date ? data.toISOString() : (data instanceof HTMLElement ? data.outerHTML : (data.toString() != "[object Object]" ? data.toString() : JSON.stringify(data)))
+			case "number":
+			case "string":
+				$('<script type="text/plain">')
+					.html(data)
+					.copy()
+				break;
+			case "undefined":
+				try {
+					return exec("copy")
+				} catch(err){
+					if(err){
+						error(err)
+					}
+					let error = a=>!!error("Cannot copy text to clipboard");
+					if(navigator.clipboard){
+						let success = !info("Trying navigator.clipboard.writeText() instead");
+						navigator.clipboard.writeText(w)
+							.then(a=>0)
+							.catch(y=>{
+								success = error()
+							})
+						return success;
+					}
+					return error()
 				}
-				return error()
-			}
+				break;
+			default:
+				try {
+					return $.copy(data.toString())
+				} catch(err){
+					error("Could not convert item to a copiable string.\n",data,err)
+				}
 		}
 	};
 
@@ -193,5 +209,5 @@
 			}
 		}
 	})()
-	$.jQlipboard.version = "w0.2";
+	$.jQlipboard.version = "w0.3";
 })(window.jQuery || console.warn("jQuery not detected. You must use a jQuery version of 1.0 or newer to run this plugin."));
