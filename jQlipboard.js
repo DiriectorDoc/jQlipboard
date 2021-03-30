@@ -1,5 +1,5 @@
 /**
- *	jQlipboard v0.2
+ *	jQlipboard v0.3
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
