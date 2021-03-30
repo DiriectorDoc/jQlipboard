@@ -10,14 +10,14 @@ To install, simply add the following script tag below the tag where `jQuery.js` 
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.2/jQlipboard.withPaste.js"></script>
+<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.3/jQlipboard.withPaste.js"></script>
 ```
 
 Or, for a minified script:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.2/jQlipboard.withPaste.min.js"></script>
+<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.3/jQlipboard.withPaste.min.js"></script>
 ```
 
 ## Copying
