@@ -37,7 +37,7 @@
 		select=(nodeB, offB, nodeE, offE)=>{
 			let range = new Range();
 			$.deselect()
-			if(offB){
+			if(nodeE){
 				range.setStart(nodeB, offB)
 				range.setEnd(nodeE, offE)
 			} else {
