@@ -35,10 +35,9 @@
 				this.select()
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
-				/*
 				if (this.css("user-select") == "none") {
 					$.copy(this.val() || this.html())
-				}*/
+				}
 			}
 			return this
 		} else {
