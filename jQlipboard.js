@@ -222,7 +222,6 @@
 					console.error("Cannot copy text to clipboard")
 					return false
 				}
-				break;
 			default:
 				try {
 					return $.copy(data.toString())
