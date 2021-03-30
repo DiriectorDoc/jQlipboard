@@ -93,7 +93,7 @@
 			case "object":
 				if(data == null){
 					$("<img>").copy()
-					return
+					break
 				}
 				data = data instanceof Date ? data.toISOString() : (data instanceof HTMLElement ? data.outerHTML : (data.toString() != "[object Object]" ? data.toString() : JSON.stringify(data)))
 			case "number":
@@ -121,7 +121,6 @@
 					}
 					return error()
 				}
-				break;
 			default:
 				try {
 					return $.copy(data.toString())
