@@ -70,9 +70,9 @@
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
 				setQlipboard(this)
-				/*if(this.css("user-select") === "none"){
+				if(this.css("user-select") === "none"){
 					$.copy(this.val() || this.html())
-				}*/
+				}
 			}
 			return this
 		} else {
