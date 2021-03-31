@@ -142,7 +142,7 @@
 					data = data.toISOString();
 				else if(data instanceof HTMLElement)
 					data = data.outerHTML;
-				else if(Object.getPrototypeOf(data) != Object.prototype)
+				else if(data.toString() != "[object Object]")
 					data = data.toString();
 				else
 					data = JSON.stringify(data);

@@ -94,7 +94,7 @@
 					$("<img>").copy()
 					break
 				}
-				data = data instanceof Date ? data.toISOString() : (data instanceof HTMLElement ? data.outerHTML : (Object.getPrototypeOf(data) != Object.prototype ? data.toString() : JSON.stringify(data)))
+				data = data instanceof Date ? data.toISOString() : (data instanceof HTMLElement ? data.outerHTML : (data.toString() != "[object Object]" ? data.toString() : JSON.stringify(data)))
 			case "number":
 			case "string":
 				$('<script type="text/plain">')
