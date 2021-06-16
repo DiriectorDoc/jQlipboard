@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="description" content="Documentation of jQlipboard" />
+		<meta name="author" content="Diriector_Doc" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="last-updated" content="Wed, 16 Jun 2021 23:22 GMT" />
+		<meta name="keywords" content="diriector_doc, diriectordoc, diriector doc, jqlipboard, jquery, documentation" />
+		<meta property="og:title" content="jQlipboard - Full Documentation" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://diriectordoc.github.io/jQlipboard" />
+		<meta property="og:image" content="https://diriectordoc.github.io/jQlipboard/img/thimbnail-720px.png" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="720" />
+		<meta property="og:image:height" content="405" />
+		<meta property="og:description" content="A jQuery extention that makes performing clipboard achions much easier." />
+		<meta property="og:locale" content="en_CA" />
+		<meta property="og:site_name" content="Diriector_Doc Pages" />
+		<title>jQlipboard - Documentation</title>
+		<link href="main.css" rel="stylesheet" type="text/css" />
+		<link href="../global.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="../global.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<div class="header">
+				<a href="./"><h2 class="logo">jQlipboard Documentation</h2></a>
+			</div>
+			<nav class="head">
+				<div class="menu-top-container">
+					<ul class="menu-top">
+						<li class="menu-item"><a href="./download.html">Download</a></li>
+						<li class="menu-item"><a href="./api.html">API Documentation</a></li>
+					</ul>
+				</div>
+				<div class="social">
+					<a href="https://github.com/DiriectorDoc/jQlipboard" class="github white"></a>
+				</div>
+			</nav>
+			<div class="content-wrapper">
+				<div class="content-full">
+					<div class="content">
+						<div class="home-content row">
+							<section class="columns">
+								<h2 class="block">What is jQlipboard?</h2>
+								<p>jQlipboard is an extension for jQuery. It makes performing clipboard actions much easier. jQlipboard is been designed to be compatible across most modern browsers.</p>
+								<h2 class="block">Powered by jQuery</h2>
+								<div class="powered">
+									<a href="https://jquery.com"><img src="img/jQuery-Logo.png" class="jQuery-Logo" /></a>
+								</div>
+							</section>
+							<aside class="columns resources">
+								<h3>Resources</h3>
+								<ul>
+									<li><a href="./api.html">jQlipboard Documentation</a></li>
+									<li><a href="https://api.jquery.com">jQuery Core API Documentation</a></li>
+									<li><a href="https://learn.jquery.com">jQuery Learning Center</a></li>
+									<li><a href="https://blog.jquery.com">jQuery Blog</a></li>
+									<li><a href="https://jquery.org">About the jQuery Foundation</a></li>
+									<li><a href="https://github.com/DiriectorDoc/jQlipboard/issues">Browse or Submit jQlipboard Bugs</a></li>
+								</ul>
+							</aside>
+						</div>
+						<section>
+							<h2 class="block">A Brief Look</h2>
+							<h3>Copying</h3>
+							<p>Copy the contents of an input field in one line.</p>
+							<div class="syntaxhighlighter">
+								<table>
+									<tbody>
+										<tr>
+											<td class="gutter">
+												<div class="line n1">1</div>
+											</td>
+											<td class="code">
+												<pre><div class="container"><div class="line"><code>$( <span class="string">"input#field"</span> ).copy()</code></div></div></pre>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<h3>Selecting/Deselecting</h3>
+							<p>Select an entire element.</p>
+							<div class="syntaxhighlighter">
+								<table>
+									<tbody>
+										<tr>
+											<td class="gutter">
+												<div class="line n1">1</div>
+												<div class="line n2">2</div>
+												<div class="line n3">3</div>
+											</td>
+											<td class="code">
+												<pre><div class="container"><div class="line"><code>$( <span class="string">"#paragraph"</span> ).select();</code></div></div><div class="container"><div class="line"><code><br /></code></div></div><div class="container"><div class="line"><code>$.deselect();</code></div></div></pre>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<h3>Pasting</h3>
+							<p>Paste clipboard contents into a textarea.</p>
+							<div class="syntaxhighlighter">
+								<table>
+									<tbody>
+										<tr>
+											<td class="gutter">
+												<div class="line n1">1</div>
+											</td>
+											<td class="code">
+												<pre><div class="container"><div class="line"><code>$( <span class="string">"textarea"</span> ).paste()</code></div></div></pre>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div class="license mit"></div>
+		</footer>
+	</body>
+</html>

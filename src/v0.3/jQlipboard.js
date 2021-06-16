@@ -6,7 +6,7 @@
  *	Author:        Diriector_Doc
  *	Licence:       MIT
  *	Repository:    https://github.com/DiriectorDoc/jQlipboard
- *	Website:       https://diriectordoc.github.io/jQlipboard
+ *	Website:       https://diriectordoc.github.io/jQlipboard/
  *
  *
  *	Copyright (c) 2020–2021 Diriector_Doc (DiriectorDoc on github)
@@ -24,7 +24,7 @@
 	function select(nodeB, offB, nodeE, offE){
 		let range = new Range();
 		$.deselect()
-		if(nodeE){
+		if(offB){
 			range.setStart(nodeB, offB)
 			range.setEnd(nodeE, offE)
 		} else {
@@ -48,9 +48,10 @@
 				this.select()
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
+				/*
 				if(this.css("user-select") == "none"){
 					$.copy(this.val() || this.html())
-				}
+				}*/
 			}
 			return this
 		} else {

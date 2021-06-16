@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="description" content="Documentation of jQlipboard" />
+		<meta name="author" content="Diriector_Doc" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="last-updated" content="Wed, 16 Jun 2021 23:22 GMT" />
+		<meta name="keywords" content="diriector_doc, diriectordoc, diriector doc, jqlipboard, jquery, documentation" />
+		<meta property="og:title" content="jQlipboard - Full Documentation" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://diriectordoc.github.io/jQlipboard" />
+		<meta property="og:image" content="https://diriectordoc.github.io/jQlipboard/img/thimbnail-720px.png" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="720" />
+		<meta property="og:image:height" content="405" />
+		<meta property="og:description" content="A jQuery extention that makes performing clipboard achions much easier." />
+		<meta property="og:locale" content="en_CA" />
+		<meta property="og:site_name" content="Diriector_Doc Pages" />
+		<title>jQlipboard - Documentation</title>
+		<link href="main.css" rel="stylesheet" type="text/css" />
+		<link href="../global.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="../global.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<div class="header">
+				<a href="./"><h2 class="logo">jQlipboard Documentation</h2></a>
+			</div>
+			<nav class="head">
+				<div class="menu-top-container">
+					<ul class="menu-top">
+						<li class="menu-item"><a href="./download.html">Download</a></li>
+						<li class="menu-item current"><a href="./api.html">API Documentation</a></li>
+					</ul>
+				</div>
+				<div class="social">
+					<a href="https://github.com/DiriectorDoc/jQlipboard" class="github white"></a>
+				</div>
+			</nav>
+			<div class="content-wrapper">
+				<div class="content-right columns">
+					<div class="content">
+						<article id="post-3">
+							<header class="entry-header">
+								<h1 class="entry-title">jQuery.cut()</h1>
+								<hr/>
+							</header>
+							<div class="entry-content">
+								<article id="jQuery-cut" class="entry">
+									<h2 class="section-title">
+										<span class="name">jQuery.cut()</span><span class="returns">Returns: <a href="javascrip:void 0">Boolean</a></span>
+									</h2>
+									<div class="entry-wrapper">
+										<p class="desc"><strong>Description: </strong>Cuts selected text to clipboard.</p>
+										<ul class="signatures">
+											<li class="signature">
+												<h4 class="name">
+													<span class="version-details">version added: <a href="javascrip:void 0">v0.1.1</a></span><a id="slice-start-end" href="#slice-start-end"><span class="icon-link"></span>jQuery.cut()</a>
+												</h4>
+												<ul>
+													<li>
+														<div class="null-signature">This method does not accept any arguments.</div>
+													</li>
+												</ul>
+											</li>
+										</ul>
+										<div class="longdesc">
+											<p>This is functionally identical to using <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#using_execcommand()"><code>document.execCommand</code></a> or simply pressing <kbd>Ctrl</kbd> + <kbd>X</kbd>, but with some extra featured in case document.execCommand fails. Upon a successful execution, this function will return <code>true</code>.</p>
+											<p>Consider the following example:</p>
+											<div class="syntaxhighlighter">
+												<table>
+													<tbody>
+														<tr>
+															<td class="gutter">
+																<div class="line">1</div>
+																<div class="line">2</div>
+																<div class="line">3</div>
+																<div class="line">4</div>
+																<div class="line">5</div>
+																<div class="line">6</div>
+																<div class="line">7</div>
+															</td>
+															<td class="code">
+																<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>&#9;<span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> /&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><br /></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">"input"</span> ).select();<span class="tag"></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div></pre>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<p>The text field &endash; <code>&lt;input&gt;</code> &endash; will be selected. From there, we can call the copy function.</p>
+											<div class="syntaxhighlighter">
+												<table>
+													<tbody>
+														<tr>
+															<td class="gutter">
+																<div class="line">1</div>
+															</td>
+															<td class="code">
+																<pre><div class="container"><div class="line"><code>$.cut();</code></div></div></pre>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<p>Any text that was inputed into the text field will be cut to the clipboard. This process will work as if you cut the text by right-clicking or by using keyboard shortcuts, but will not invote a cuting or copying event listener.</p>
+										</div>
+									</div>
+								</article>
+							</div>
+						</article>
+					</div>
+					<div id="sidebar" class="widget-area" role="complementary">
+						<aside id="categories" class="widget">
+							<ul>
+								<li class="cat-item"><a href="./copy.html">Copying</a>
+									<ul class="children">
+										<li class="cat-item"><a href="./jQuery-copy.html">Copying Strings</a>
+										</li>
+										<li class="cat-item"><a href="./copy.html">Copying Elements</a>
+										</li>
+										<li class="cat-item"><a href="./jQuery-cut.html">Cutting Text</a>
+										</li>
+										<li class="cat-item"><a href="./cut.html">Cutting Elements</a>
+										</li>
+									</ul>
+								</li>
+								<li class="cat-item"><a href="./select.html">Selecting</a>
+									<ul class="children">
+										<li class="cat-item"><a href="./jQuery-deselect.html">Deselecting</a>
+										</li>
+									</ul>
+								</li>
+								<li class="cat-item"><a href="./jQuery-paste.html">Pasting</a>
+									<ul class="children">
+										<li class="cat-item"><a href="./jQuery-paste.html">Generic Paste</a>
+										</li>
+										<li class="cat-item"><a href="./paste.html">Paste In Element</a>
+										</li>
+									</ul>
+								</li>
+								<li class="cat-item"><a href="./jQuery-jQlipboard.html">Initialization</a>
+								</li>
+							</ul>
+						</aside>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div class="license mit"></div>
+		</footer>
+	</body>
+</html>

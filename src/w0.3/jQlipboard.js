@@ -1,12 +1,12 @@
 /**
- *	jQlipboard v0.3
+ *	jQlipboard w0.3 (withPaste)
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
  *	Author:        Diriector_Doc
  *	Licence:       MIT
  *	Repository:    https://github.com/DiriectorDoc/jQlipboard
- *	Website:       https://diriectordoc.github.io/jQlipboard
+ *	Website:       https://diriectordoc.github.io/jQlipboard/
  *
  *
  *	Copyright (c) 2020–2021 Diriector_Doc (DiriectorDoc on github)
@@ -17,6 +17,27 @@
 
 	let selec = window.getSelection();
 
+	function setQlipboard($this){
+		$.jQlipboard.qlipboard.jqobj = $this instanceof $ ? $this.clone() : null;
+		$.jQlipboard.qlipboard.text = "";
+
+		navigator.clipboard.readText()
+			.then(text => {
+				$.jQlipboard.qlipboard.text = text
+			})
+			.catch(warning)
+		if($.jQlipboard.qlipboard.jqobj){
+			$.jQlipboard.qlipboard.text = $this[0] && $($this).is("img") ? "image" : $this.val() || $this.html() || ""
+		}
+	}
+
+	function warning(err){
+		console.error(err)
+		console.warn("Browser does not have permission to access clipboard. Some features may not work until permission is granted.")
+		console.info('To grant permission, go into your browser setting and allow "Clipboard"')
+		warning = nothing
+	}
+
 	function nothing(){
 		return
 	}
@@ -24,7 +45,7 @@
 	function select(nodeB, offB, nodeE, offE){
 		let range = new Range();
 		$.deselect()
-		if(nodeE){
+		if(offB){
 			range.setStart(nodeB, offB)
 			range.setEnd(nodeE, offE)
 		} else {
@@ -48,9 +69,10 @@
 				this.select()
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
-				if(this.css("user-select") == "none"){
+				setQlipboard(this)
+				/*if(this.css("user-select") === "none"){
 					$.copy(this.val() || this.html())
-				}
+				}*/
 			}
 			return this
 		} else {
@@ -70,6 +92,31 @@
 				.appendTo("body")
 				.copy()
 				.remove()
+		}
+	};
+
+	/*
+	* @returns {jQuery} this
+	*/
+	$.fn.paste = function(){
+		if($(this).is("input,textarea")){
+			if(this.is(":focus") || this[0] === document.activeElement){
+				return $.paste() ? this:this.val($.jQlipboard.qlipboard.text)
+			}
+			let nodeB = selec.baseNode,
+				offB = selec.baseOffset,
+				nodeE = selec.extentNode,
+				offE = selec.extentOffset;
+			this.focus()
+			if(!$.paste()){
+				let text = this.val(),
+					e = this[0];
+				this.val(text.slice(0, e.selectionStart) + $.jQlipboard.qlipboard.text + text.slice(e.selectionEnd))
+			}
+			select(nodeB, offB, nodeE, offE)
+			return this
+		} else {
+			return this.append($.jQlipboard.qlipboard.jqobj.clone())
 		}
 	};
 
@@ -184,8 +231,64 @@
 				}
 		}
 	};
+
+	/*
+	* @returns {boolean}
+	*/
+	$.paste = () => {
+		try {
+			if(!document.execCommand("paste")){
+				throw false
+			}
+			return true
+		} catch(err){
+			if(err){
+				console.warn(err)
+			}
+			let success = true;
+			navigator.clipboard.readText()
+				.then(clipText => {
+					let $focus = $(document.activeElement),
+						e = $focus[0],
+						text = $focus.val();
+					text = text.slice(0, e.selectionStart) + clipText + text.slice(e.selectionEnd);
+					$focus.val(text)
+				})
+				.catch(err => {
+					console.error("Could not execute paste", err)
+					success = false
+				})
+			return success
+		}
+	};
+
+	$.jQlipboard = function(config){
+		if(!config){
+			config = {}
+		}
+		config = {
+			permissionPrompt: config.permissionPrompt || "when needed",
+			copyListener: config.copyListener || config.copyListener === undefined,
+			...config
+		}
+		$.jQlipboard.qlipboard = {}
+		if(config.permissionPrompt == "immediate"){
+			navigator.clipboard.readText()
+				.then(nothing)
+				.catch(warning)
+		}
+		if(config.copyListener){
+			if($.fn.on){
+				$(document).on("copy", setQlipboard)
+			} else {
+				$(document).bind("copy", setQlipboard)
+			}
+		}
+	};
+
+	$.jQlipboard()
 	
-	$.jQlipboard = {version: "v0.3"};
+	$.jQlipboard.version = "w0.3";
 }((function(){
 	try{
 		return jQuery

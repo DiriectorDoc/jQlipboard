@@ -1,12 +1,12 @@
 /**
- *	jQlipboard v0.3
+ *	jQlipboard v0.2
  *	A jQuery plugin that makes handling clipboard processes easier
  *
  *
  *	Author:        Diriector_Doc
  *	Licence:       MIT
  *	Repository:    https://github.com/DiriectorDoc/jQlipboard
- *	Website:       https://diriectordoc.github.io/jQlipboard
+ *	Website:       https://diriectordoc.github.io/jQlipboard/
  *
  *
  *	Copyright (c) 2020–2021 Diriector_Doc (DiriectorDoc on github)
@@ -24,7 +24,7 @@
 	function select(nodeB, offB, nodeE, offE){
 		let range = new Range();
 		$.deselect()
-		if(nodeE){
+		if(offB){
 			range.setStart(nodeB, offB)
 			range.setEnd(nodeE, offE)
 		} else {
@@ -48,7 +48,7 @@
 				this.select()
 				$.copy()
 				select(nodeB, offB, nodeE, offE)
-				if(this.css("user-select") == "none"){
+				if(this.css("user-select") === "none"){
 					$.copy(this.val() || this.html())
 				}
 			}
@@ -56,10 +56,10 @@
 		} else {
 			return this
 				.css({
-					display: "block",
 					position: "absolute",   // Ensures that appending the object does not mess up the existing document
 
-					left: "-9999in", // Makes the object display out of sight. `display:none` will not work since it supresses selecting
+					opacity: 0,
+					color: "rgba(0,0,0,0)", // Makes the object invisible. `display:none` will not work since it supresses selecting
 
 					"-webkit-user-select": "text",
 					"-khtml-user-select": "text",
@@ -128,64 +128,42 @@
 	};
 
 	/*
-	* @param {*} data - Anything that can be turned into a string
-	* @returns {(boolean|undefined)}
+	* @param {string} text
+	* @returns {boolean}
 	*/
-	$.copy = data => {
-		switch(typeof data){
-			case "object":
-				if(data == null){
-					$("<img>").copy()
-					return
+	$.copy = text => {
+		if(text !== undefined){
+			$("<a>")
+				.html(text)
+				.copy()
+		} else {
+			try {
+				if(!document.execCommand("copy")){
+					throw false
 				}
-				if(data instanceof Date)
-					data = data.toISOString();
-				else if(data instanceof HTMLElement)
-					data = data.outerHTML;
-				else if(data.toString() != "[object Object]")
-					data = data.toString();
-				else
-					data = JSON.stringify(data);
-			case "number":
-			case "string":
-				$('<script type="text/plain">')
-					.html(data)
-					.copy()
-				break;
-			case "undefined":
-				try {
-					if(!document.execCommand("copy")){
-						throw false
-					}
-					return true
-				} catch(err){
-					if(err){
-						console.error(err)
-					}
-					if(navigator.clipboard){
-						console.info("Trying navigator.clipboard.writeText() instead")
-						let success = true;
-						navigator.clipboard.writeText(selec)
-							.then(nothing)
-							.catch(function(){
-								console.error("Cannot copy text to clipboard")
-								success = false
-							})
-						return success
-					}
-					console.error("Cannot copy text to clipboard")
-					return false
+				return true
+			} catch(err){
+				if(err){
+					console.error(err)
 				}
-			default:
-				try {
-					return $.copy(data.toString())
-				} catch(err){
-					console.error("Could not convert item to a copiable string.\n",data,err)
+				if(navigator.clipboard){
+					console.info("Trying navigator.clipboard.writeText() instead")
+					let success = true;
+					navigator.clipboard.writeText(selec.toString())
+						.then(nothing)
+						.catch(function(){
+							console.error("Cannot copy text to clipboard")
+							success = false
+						})
+					return success
 				}
+				console.error("Cannot copy text to clipboard")
+				return false
+			}
 		}
 	};
 	
-	$.jQlipboard = {version: "v0.3"};
+	$.jQlipboard = {version: "v0.2"};
 }((function(){
 	try{
 		return jQuery

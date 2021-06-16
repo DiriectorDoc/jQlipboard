@@ -3,21 +3,21 @@
 # jQlipboard
 jQlipboard is a jQuery extension that makes accessing the clipboard much easier. This plugin also has features that make it usable across all modern browsers.
 
-The following is a brief tutorial on how to use jQlipboard. Full documentation can be found [here](https://diriectordoc.github.io/jQlipboard-Docs).
+The following is a brief tutorial on how to use jQlipboard. Full documentation can be found [here](https://diriectordoc.github.io/jQlipboard).
 
 ## Installation
 To install, simply add the following script tag below the tag where `jQuery.js` is called:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
-<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.3/jQlipboard.js"></script>
+<script src="https://diriectordoc.github.io/jQlipboard/src/v0.3/jQlipboard.js"></script>
 ```
 
 Or, for a minified script:
 
 ```html
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://diriectordoc.github.io/jQlipboard-Docs/src/v0.3/jQlipboard.min.js"></script>
+<script src="https://diriectordoc.github.io/jQlipboard/src/v0.3/jQlipboard.min.js"></script>
 ```
 
 ## Copying

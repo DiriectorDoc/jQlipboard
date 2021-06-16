@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="description" content="Documentation of jQlipboard" />
+		<meta name="author" content="Diriector_Doc" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="last-updated" content="Wed, 16 Jun 2021 23:22 GMT" />
+		<meta name="keywords" content="diriector_doc, diriectordoc, diriector doc, jqlipboard, jquery, documentation" />
+		<meta property="og:title" content="jQlipboard - Full Documentation" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://diriectordoc.github.io/jQlipboard" />
+		<meta property="og:image" content="https://diriectordoc.github.io/jQlipboard/img/thimbnail-720px.png" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="720" />
+		<meta property="og:image:height" content="405" />
+		<meta property="og:description" content="A jQuery extention that makes performing clipboard achions much easier." />
+		<meta property="og:locale" content="en_CA" />
+		<meta property="og:site_name" content="Diriector_Doc Pages" />
+		<title>jQlipboard - Documentation</title>
+		<link href="main.css" rel="stylesheet" type="text/css" />
+		<link href="../global.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="../global.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<div class="header">
+				<a href="./"><h2 class="logo">jQlipboard Documentation</h2></a>
+			</div>
+			<nav class="head">
+				<div class="menu-top-container">
+					<ul class="menu-top">
+						<li class="menu-item"><a href="./download.html">Download</a></li>
+						<li class="menu-item current"><a href="./api.html">API Documentation</a></li>
+					</ul>
+				</div>
+				<div class="social">
+					<a href="https://github.com/DiriectorDoc/jQlipboard" class="github white"></a>
+				</div>
+			</nav>
+			<div class="content-wrapper">
+				<div class="content-right columns">
+					<div class="content">
+						<article id="post-1">
+							<header class="entry-header">
+								<h1 class="entry-title">jQuery.copy()</h1>
+								<hr/>
+							</header>
+							<div class="entry-content">
+								Copy text and information to the clipboard.
+								<div class="toc">
+									<h4><span>Contents:</span></h4>
+									<ul class="toc-list">
+										<li>
+											<a href="#jQuery-copy1">jQuery.copy()</a>
+											<ul>
+												<li><a href="#jQuery-copy1">jQuery.copy()</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href="#jQuery-copy2">jQuery.copy( Data )</a>
+											<ul>
+												<li><a href="#jQuery-copy2">jQuery.copy( String )</a></li>
+												<li><a href="#jQuery-copy2">jQuery.copy( Data )</a></li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+								<article id="jQuery-copy1" class="entry">
+									<h2 class="section-title">
+										<span class="name">jQuery.copy()</span><span class="returns">Returns: <a href="javascrip:void 0">Boolean</a></span>
+									</h2>
+									<div class="entry-wrapper">
+										<p class="desc"><strong>Description: </strong>Copies selected data to clipboard.</p>
+										<ul class="signatures">
+											<li class="signature">
+												<h4 class="name">
+													<span class="version-details">version added: <a href="javascrip:void 0">v0.1.1</a></span><a id="slice-start-end1" href="#slice-start-end1"><span class="icon-link"></span>jQuery.copy()</a>
+												</h4>
+												<ul>
+													<li>
+														<div class="null-signature">This method does not accept any arguments.</div>
+													</li>
+												</ul>
+											</li>
+										</ul>
+										<div class="longdesc">
+											<p>This is functionally identical to using <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#using_execcommand()"><code>document.execCommand</code></a> or simply pressing <kbd>Ctrl</kbd> + <kbd>C</kbd>, but with some extra featured in case document.execCommand fails. Upon a successful execution, this function will return <code>true</code>.</p>
+											<p>Consider the following example:</p>
+											<div class="syntaxhighlighter">
+												<table>
+													<tbody>
+														<tr>
+															<td class="gutter">
+																<div class="line">1</div>
+																<div class="line">2</div>
+																<div class="line">3</div>
+																<div class="line">4</div>
+																<div class="line">5</div>
+																<div class="line">6</div>
+																<div class="line">7</div>
+															</td>
+															<td class="code">
+																<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>&#9;<span class="tag">&lt;<span class="title">p</span> <span class="attribute">class</span>=<span class="value">"copy"</span>&gt;</span>Some text to copy<span class="tag">&lt;/<span class="title">p</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><br /></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>$( <span class="string">".copy"</span> ).select();<span class="tag"></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div></pre>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<p>The paragraph with the class "copy" will be selected. From there, we can call the copy function.</p>
+											<div class="syntaxhighlighter">
+												<table>
+													<tbody>
+														<tr>
+															<td class="gutter">
+																<div class="line">1</div>
+															</td>
+															<td class="code">
+																<pre><div class="container"><div class="line"><code>$.copy();</code></div></div></pre>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<p>The text "Some text to copy" will be copied to the clipboard. This process will work as if you copied by right-clicking or by using keyboard shortcuts, but will not invote a copying event listener.</p>
+										</div>
+									</div>
+								</article>
+								<article id="jQuery-copy2" class="entry">
+									<h2 class="section-title">
+										<span class="name">jQuery.copy( String )</span><span class="returns">Returns: <a href="javascrip:void 0">Boolean</a></span>
+									</h2>
+									<div class="entry-wrapper">
+										<p class="desc"><strong>Description: </strong>Copies strings to clipboard.</p>
+										<ul class="signatures">
+											<li class="signature">
+												<h4 class="name">
+													<span class="version-details">version added: <a href="javascrip:void 0">v0.1.9</a></span><a id="slice-start-end2" href="#slice-start-end2"><span class="icon-link"></span>jQuery.copy( String )</a>
+												</h4>
+												<ul>
+													<li>
+														<div><strong>String</strong></div>
+														<div>Type: <a href="javascript:void 0">String</a></div>
+														<div>A string that will be coppied to the clipboard</div>
+													</li>
+												</ul>
+											</li>
+											<li class="signature">
+												<h4 class="name">
+													<span class="version-details">version added: <a href="javascrip:void 0">v0.3</a></span><a id="slice-start-end2" href="#slice-start-end2"><span class="icon-link"></span>jQuery.copy( Data )</a>
+												</h4>
+												<ul>
+													<li>
+														<div><strong>Data</strong></div>
+														<div>Type: <a href="javascript:void 0">Anything</a></div>
+														<div>Any data that can be coppied as a string</div>
+													</li>
+												</ul>
+											</li>
+										</ul>
+										<div class="longdesc">
+											<p>This is function works similarly to the <code>window.copy</code> which is availible in the console of <a href="https://developers.google.com/web/tools/chrome-devtools/console/utilities#copy">some browsers</a>. A string that is imputed into this function will be copied to the clipboard. Upon a successful execution, this function will return <code>true</code>.</p>
+											<p>Consider a page with a simple list on it:</p>
+											<div class="syntaxhighlighter">
+												<table>
+													<tbody>
+														<tr>
+															<td class="gutter">
+																<div class="line">1</div>
+																<div class="line">2</div>
+																<div class="line">3</div>
+															</td>
+															<td class="code">
+																<pre><div class="container"><div class="line"><code><span class="keyword">var</span> str = <span class="string">"Copied!"</span>;</code></div></div><div class="container"><div class="line"><code><br /></code></div></div><div class="container"><div class="line"><code>$.copy( str );</code></div></div></pre>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<p>The text "Copied!" will be copied to the clipboard. This process will not invoke a copying event listener.</p>
+											<p>If the Data passed into <code>$.copy</code> is not already a string, it will become one if its <code>.toString()</code> function returns a usable string. Otherwise, the function will copy a jsonified string of the parameter.</p>
+											<div class="syntaxhighlighter">
+												<table>
+													<tbody>
+														<tr>
+															<td class="gutter">
+																<div class="line">1</div>
+																<div class="line">2</div>
+																<div class="line">3</div>
+																<div class="line">4</div>
+																<div class="line">5</div>
+																<div class="line">6</div>
+																<div class="line">7</div>
+																<div class="line">8</div>
+																<div class="line">9</div>
+																<div class="line">10</div>
+																<div class="line">11</div>
+															</td>
+															<td class="code">
+																<pre><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">div</span>&gt;</span>Hello World<span class="tag">&lt;/<span class="title">div</span>&gt;</span></code></div></div><div class="container"><div class="line"><code><br /></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;<span class="title">script</span>&gt;</span></code></div></div><div class="container"><div class="line"><code>$.copy( <span class="number">1234</span> ) <span class="comment">// "1234" is copied</span></code></div></div><div class="container"><div class="line"><code>$.copy( <span class="literal">false</span> ) <span class="comment">// "false" is copied</span></code></div></div><div class="container"><div class="line"><code>$.copy( {hello: <span class="string">"world"</span>} ) <span class="comment">// '{"hello":"world"}' is copied</span></code></div></div><div class="container"><div class="line"><code>$.copy( <span class="keyword">new</span> Date(<span class="string">"1/1/2021"</span>) ) <span class="comment">// "2021-01-01T05:00:00.000Z" is copied</span></code></div></div><div class="container"><div class="line"><code>$.copy( document.querySelector(<span class="string">"div"</span>) ) <span class="comment">// "&lt;div&gt;Hello World&lt;/div&gt;" is copied</span></code></div></div><div class="container"><div class="line"><code>$.copy( <span class="number">12345678901234567890n</span> ) <span class="comment">// "12345678901234567890" is copied</span></code></div></div><div class="container"><div class="line"><code>$.copy( {toString: <span class="keyword">function</span>(){<span class="keyword">return</span> <span class="string">"Hello World"</span>} ) <span class="comment">// "Hello World" is copied</span></code></div></div><div class="container"><div class="line"><code><span class="tag">&lt;/<span class="title">script</span>&gt;</span></code></div></div></pre>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<p>Note: the <code>.toString()</code> function will only trigger if its output is not the literal <code>"[object Object]"</code>. If this is the case, the passed data will be jsonified and then copied.</p>
+										</div>
+									</div>
+								</article>
+							</div>
+						</article>
+					</div>
+					<div id="sidebar" class="widget-area" role="complementary">
+						<aside id="categories" class="widget">
+							<ul>
+								<li class="cat-item"><a href="./copy.html">Copying</a>
+									<ul class="children">
+										<li class="cat-item"><a href="./jQuery-copy.html">Copying Strings</a>
+										</li>
+										<li class="cat-item"><a href="./copy.html">Copying Elements</a>
+										</li>
+										<li class="cat-item"><a href="./jQuery-cut.html">Cutting Text</a>
+										</li>
+										<li class="cat-item"><a href="./cut.html">Cutting Elements</a>
+										</li>
+									</ul>
+								</li>
+								<li class="cat-item"><a href="./select.html">Selecting</a>
+									<ul class="children">
+										<li class="cat-item"><a href="./jQuery-deselect.html">Deselecting</a>
+										</li>
+									</ul>
+								</li>
+								<li class="cat-item"><a href="./jQuery-paste.html">Pasting</a>
+									<ul class="children">
+										<li class="cat-item"><a href="./jQuery-paste.html">Generic Paste</a>
+										</li>
+										<li class="cat-item"><a href="./paste.html">Paste In Element</a>
+										</li>
+									</ul>
+								</li>
+								<li class="cat-item"><a href="./jQuery-jQlipboard.html">Initialization</a>
+								</li>
+							</ul>
+						</aside>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div class="license mit"></div>
+		</footer>
+	</body>
+</html>
