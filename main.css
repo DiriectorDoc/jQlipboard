@@ -309,6 +309,37 @@ table {
 	border-spacing: 0;
 }
 
+.browser-compatibility {
+	width: 100%;
+}
+.browser-compatibility td {
+	text-align: center;
+	border: 2px solid black;
+	width: 18%;
+	font-size: 1.2em;
+}
+.browser-compatibility td:first-child {
+	width: 10%;
+	font-size: 1em;
+	font-weight: bold;
+}
+.browser-compatibility td .mobile::after {
+	content: "";
+	background: url(img/svg/mobile-icon.svg) no-repeat;
+	display: inline-block;
+	height: 1em;
+	width: 1em;
+	vertical-align: sub;
+}
+.browser-compatibility .browser-icon {
+	height: 1.8em;
+}
+.browser-compatibility hr {
+	margin: 0;
+	height: 2px;
+	background: #000;
+}
+
 .column,
 .columns {
 	float: left;
