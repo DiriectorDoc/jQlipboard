@@ -1,3 +1,4 @@
 .vscode/*
 minifier.bat
 minifier.min.js
+timestamp.bat
