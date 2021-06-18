@@ -1,11 +1,5 @@
 @charset "UTF-8";
 
-
-.tinynav {
-	display: none;
-}
-
-
 * {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -779,6 +773,10 @@ table {
 	padding: 1em 0;
 	position: relative !important;
 	width: 100% !important;
+}
+
+.tinynav {
+	display: none;
 }
 
 .toc-linked .toc-link {
