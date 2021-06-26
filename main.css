@@ -311,6 +311,8 @@ table {
 
 .browser-compatibility {
 	width: 100%;
+	margin-left: 0 !important;
+    margin-right: 0 !important;
 }
 .browser-compatibility td {
 	text-align: center;
@@ -322,6 +324,9 @@ table {
 	width: 10%;
 	font-size: 1em;
 	font-weight: bold;
+}
+.browser-compatibility td .mobile {
+	white-space: nowrap;
 }
 .browser-compatibility td .mobile::after {
 	content: "";
