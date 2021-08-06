@@ -62,3 +62,6 @@ Using `$(...).select()` will highlight the target element. This will work on alm
 ```
 
 Calling the function `$.deselect()` will nullify any selection there may be on the page.
+
+## Source
+The source files are kept in the */src* directory. Files */src/\*.js* and */src/w/\*.js* are the files that get updated gradually. Once an edit is stable enough to release, the version number of each file is updated and then placed in their respective release folder, labled with the version number ("v" for base jQlipboard and "w" for jQlipboard withPaste).
